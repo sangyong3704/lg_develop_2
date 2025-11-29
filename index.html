@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>통합 인사이트 프로필</title>
+    <title>팀원 관리 시스템</title>
     
     <!-- 폰트: Noto Sans KR -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -228,6 +228,9 @@
             border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;
         }
         .btn-secondary:hover { background: #f5f5f5; }
+
+        /* 비활성화 상태 스타일 */
+        .disabled-area { opacity: 0.5; pointer-events: none; filter: grayscale(100%); transition: all 0.3s; }
 
         /* Evidence Section */
         .evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -494,7 +497,7 @@
                         <!-- B. AI 근거 -->
                         <div id="section-evidence" class="fb-section" style="display:none;">
                             <span class="fb-label">2. 데이터 기반 근거 선택 (AI Suggestion)</span>
-                            <p class="fb-desc">AI가 입력 키워드와 연관된 <strong>실제 과제 사례</strong>를 찾아 근거를 제안합니다.</p>
+                            <p class="fb-desc">입력하신 키워드와 팀원의 데이터를 바탕으로 AI가 구체적인 근거를 제안합니다. [선택]을 누르면 피드백에 반영됩니다.</p>
                             
                             <div class="evidence-grid">
                                 <!-- 강점 근거 -->
@@ -528,7 +531,7 @@
                         </div>
 
                         <!-- C. 톤앤매너 -->
-                        <div class="fb-section">
+                        <div id="section-tone" class="fb-section disabled-area">
                             <span class="fb-label">3. 커뮤니케이션 스타일 설정</span>
                             <p class="fb-desc">설정을 변경하면 하단의 최종 메시지가 <strong>즉시 수정</strong>됩니다.</p>
                             <div class="tone-container">
@@ -557,7 +560,7 @@
                         </div>
 
                         <!-- D. 최종 프리뷰 -->
-                        <div class="fb-section">
+                        <div id="section-final" class="fb-section disabled-area">
                             <span class="fb-label">4. 최종 피드백 미리보기</span>
                             <div class="final-box">
                                 <textarea id="final-feedback-text" class="final-text" placeholder="AI 근거 선택 및 톤 설정을 완료하면 최종 메시지가 여기에 생성됩니다."></textarea>
@@ -781,13 +784,17 @@
             document.getElementById('tab-' + id).classList.add('active');
         }
 
-        /* ================= FEEDBACK LOGIC (Project-based Narrative) ================= */
+        /* ================= FEEDBACK LOGIC ================= */
         
         function resetFeedbackTab() {
             document.getElementById('input-str').value = '';
             document.getElementById('input-imp').value = '';
             document.getElementById('input-gro').value = '';
             document.getElementById('section-evidence').style.display = 'none';
+            // Disabled Class Add
+            document.getElementById('section-tone').classList.add('disabled-area');
+            document.getElementById('section-final').classList.add('disabled-area');
+            
             document.getElementById('final-feedback-text').value = '';
             
             selectedEvidence = { str: '', imp: '', gro: '' };
@@ -798,7 +805,15 @@
             });
         }
 
-        // [핵심] 프로젝트 기반 스토리텔링 생성 함수
+        // 1. 유효성 검사
+        function validateInputs() {
+            const s = document.getElementById('input-str').value.trim();
+            const i = document.getElementById('input-imp').value.trim();
+            const g = document.getElementById('input-gro').value.trim();
+            return s && i && g;
+        }
+
+        // 2. 프로젝트 기반 스토리텔링 생성 함수 (Improved Logic)
         function getContextEvidence(inputText, type) {
             const member = teamDB[currentMemberKey];
             if (!member || !member.projectLog) return "";
@@ -807,20 +822,34 @@
             const imp = member.projectLog.improve;
 
             if (type === 'str') {
-                return `예를 들어 연초에 '${succ.name}' 과제를 목표로 하였는데, 목표대로 완성되어 ${succ.result} 성과를 냈습니다. 특히 업무 방식에 있어 '${succ.method}' 점을 시도해 본 것이 매우 의미 있었다고 생각합니다.`;
+                // 강점 근거: 성공 과제 + 구체적 시도 방법
+                return `연초 목표였던 '${succ.name}' 과제가 목표대로 완성되어 ${succ.result} 성과를 냈습니다. 특히 업무 방식에 있어 '${succ.method}' 점을 시도해 본 것이 매우 의미 있었다고 생각합니다.`;
             } else if (type === 'imp') {
+                // 보완점 근거: 미흡 과제 + 아쉬운 점
                 return `다만 '${imp.name}' 과제는 계획했던 만큼 달성되지 못했는데, 진행하는 과정에서 '${imp.missing}' 점을 시도해보지 않은 점은 아쉽습니다.`;
             } else { // gro
-                return `앞으로는 이러한 개선점('${imp.missing}')을 보완한다면, 향후 '${member.goalRole}'로서 더 큰 성과를 낼 수 있을 것이라 생각합니다.`;
+                // 성장 제언: 미흡점 보완 -> 미래 역할 연결
+                return `앞으로는 이러한 부분('${imp.issue}')을 개선한다면, 향후 '${member.goalRole}'로서 더 큰 성과를 낼 수 있을 것이라 생각합니다.`;
             }
         }
 
         function initAiEvidenceSection() {
+            if (!validateInputs()) {
+                alert("강점, 보완점, 성장/방향을 모두 입력해야\nAI 근거를 생성할 수 있습니다.");
+                return;
+            }
+
             if(!currentMemberKey) return;
             regenerateEvidence('str');
             regenerateEvidence('imp');
             regenerateEvidence('gro');
+            
             document.getElementById('section-evidence').style.display = 'block';
+            
+            // Enable Next Sections
+            document.getElementById('section-tone').classList.remove('disabled-area');
+            document.getElementById('section-final').classList.remove('disabled-area');
+
             document.getElementById('section-evidence').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -862,6 +891,7 @@
             generateFinalFeedback();
         }
 
+        // 3. 어조 변환 및 문단 생성 (Improved Tone Logic)
         function generateFinalFeedback() {
             const strInput = document.getElementById('input-str').value.trim();
             const impInput = document.getElementById('input-imp').value.trim();
@@ -873,10 +903,17 @@
             }
 
             let sentences = [];
-            
-            // 어조에 따른 서술어 변형
             const isLogical = toneProfile.style === 'logical';
-            const isSoft = toneProfile.style === 'soft';
+            
+            // [어조 변환 함수]
+            const modifyEnding = (text, mode) => {
+                if(!text) return "";
+                // 간단한 어미 변환 규칙 (Prototype 수준)
+                if(mode === 'soft') {
+                    return text.replace(/합니다/g, '해요').replace(/했습니다/g, '했어요').replace(/입니다/g, '이에요').replace(/생각합니다/g, '생각해요').replace(/아쉽습니다/g, '조금 아쉬웠어요');
+                }
+                return text; // Logical은 그대로 (합니다체)
+            };
 
             // 1. 오프닝
             if (isLogical) sentences.push(`금년도 성과에 대한 종합 피드백을 전달합니다.`);
@@ -888,7 +925,7 @@
                 if (isLogical) s = `우선, ${strInput} 점은 매우 긍정적으로 평가됩니다.`;
                 else s = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
                 
-                if (selectedEvidence.str) s += ` ${selectedEvidence.str}`;
+                if (selectedEvidence.str) s += ` ${modifyEnding(selectedEvidence.str, isLogical?'logical':'soft')}`;
                 sentences.push(s);
             }
 
@@ -898,7 +935,7 @@
                 if (isLogical) i = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
                 else i = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
                 
-                if (selectedEvidence.imp) i += ` ${selectedEvidence.imp}`;
+                if (selectedEvidence.imp) i += ` ${modifyEnding(selectedEvidence.imp, isLogical?'logical':'soft')}`;
                 sentences.push(i);
             }
 
@@ -908,13 +945,18 @@
                 if (isLogical) g = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
                 else g = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
                 
-                if (selectedEvidence.gro) g += ` ${selectedEvidence.gro}`;
+                if (selectedEvidence.gro) g += ` ${modifyEnding(selectedEvidence.gro, isLogical?'logical':'soft')}`;
                 sentences.push(g);
             }
 
             // 5. 클로징
-            if (isLogical) sentences.push(`위 내용에 대한 구체적인 실행 계획(Action Plan)을 수립하여 차주 미팅 시 논의합시다.`);
-            else sentences.push(`언제든 도움이 필요하거나 힘든 점이 있다면 편하게 이야기해주세요. 항상 응원합니다.`);
+            if (toneProfile.focus === 'task') {
+                if(isLogical) sentences.push(`위 내용에 대한 구체적인 실행 계획(Action Plan)을 수립하여 차주 미팅 시 논의합시다.`);
+                else sentences.push(`어떻게 하면 목표를 더 잘 달성할 수 있을지, 구체적인 방법을 같이 고민해봐요.`);
+            } else {
+                if(isLogical) sentences.push(`지속적인 성장을 지원하겠습니다.`);
+                else sentences.push(`언제든 도움이 필요하거나 힘든 점이 있다면 편하게 이야기해주세요. 항상 응원합니다.`);
+            }
 
             document.getElementById('final-feedback-text').value = sentences.join("\n\n");
         }
