@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>팀원 관리 시스템</title>
+    <title>LG화학 팀원 관리 시스템</title>
     
     <!-- 폰트: Noto Sans KR -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* [디자인 시스템] */
+        /* [디자인 시스템] LG화학 브랜드 컬러 팔레트 준수 */
         :root {
             --color-magenta: #D7177B;
             --color-purple: #551D83;
@@ -46,14 +46,22 @@
 
         .logo-area { 
             text-decoration: none; color: #fff; font-size: 22px; font-weight: 700; 
-            letter-spacing: -0.5px; cursor: pointer; 
+            letter-spacing: -0.5px; cursor: pointer; display: flex; align-items: center; gap: 8px;
+        }
+        /* 심볼 로고 SVG (LG Chem 스타일 단순화) */
+        .logo-symbol {
+            width: 24px; height: 24px; background: #fff; 
+            mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-4.42 3.58-8 8-8s8 3.58 8 8h-2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 3.03 2.28 5.53 5.2 5.92v2.01h-.2z'/%3E%3C/svg%3E") no-repeat center;
+            -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-4.42 3.58-8 8-8s8 3.58 8 8h-2c0-3.31-2.69-6-6-6s-6 2.69-6 6c0 3.03 2.28 5.53 5.2 5.92v2.01h-.2z'/%3E%3C/svg%3E") no-repeat center;
+            mask-size: cover; -webkit-mask-size: cover; background-color: #fff;
         }
         
         .search-box {
             background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
             border-radius: 20px; padding: 8px 20px; color: #fff; outline: none; width: 280px; font-size: 14px;
+            transition: 0.3s;
         }
-        .search-box:focus { background: rgba(255,255,255,0.35); }
+        .search-box:focus { background: rgba(255,255,255,0.35); border-color: #fff; }
         .search-box::placeholder { color: rgba(255,255,255,0.8); }
 
         /* 2. 메인 컨테이너 */
@@ -120,6 +128,7 @@
         .tab-link {
             display: block; padding: 16px 10px; color: #999;
             text-decoration: none; font-size: 16px; font-weight: 500; cursor: pointer;
+            transition: 0.3s;
         }
         .tab-item.active .tab-link { color: var(--color-purple); font-weight: 700; border-bottom: 3px solid var(--color-purple); }
 
@@ -160,13 +169,18 @@
         .progress-track { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
         .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
 
+        .swot-row { display: flex; gap: 10px; }
+        .swot-col { flex: 1; }
+        .swot-head { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
         .swot-item { font-size: 12px; padding: 8px; border-radius: 6px; background: #fcfcfc; border: 1px solid #eee; margin-bottom: 6px;}
-        .timeline { position: relative; padding-left: 16px; }
+        
+        .timeline { position: relative; padding-left: 16px; margin-top: 10px; }
         .timeline::before { content: ''; position: absolute; left: 5px; top: 6px; bottom: 0; width: 2px; background: #eee; }
         .timeline-item { position: relative; padding-bottom: 20px; padding-left: 16px; }
         .timeline-dot { position: absolute; left: -16px; top: 0; width: 10px; height: 10px; background: #fff; border: 3px solid var(--color-purple); border-radius: 50%; z-index: 1; }
         .timeline-date { font-size: 12px; font-weight: 700; color: var(--color-purple); }
         .timeline-content { font-size: 13px; font-weight: 500; margin-top: 2px; }
+        .timeline-sub { font-size: 12px; color: #999; margin-top: 2px; }
         
         /* [TAB 2] 성과 & 육성 */
         .eval-summary-card {
@@ -182,6 +196,7 @@
         .eval-sub { font-size: 13px; color: var(--color-teal); font-weight: 500; }
         .eval-sub.kpi { color: var(--color-magenta); }
         .eval-grade { font-size: 42px; font-weight: 900; color: #fff; line-height: 1; text-shadow: 0 0 10px rgba(215, 23, 123, 0.5); }
+        .eval-grade-box { text-align: center; }
 
         .cv-item { margin-bottom: 14px; font-size: 13px; }
         .cv-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
@@ -191,7 +206,7 @@
         .cv-bar-fill { height: 100%; background: var(--color-teal); border-radius: 3px; }
 
         .kpi-wrapper { display: flex; align-items: center; justify-content: center; gap: 30px; height: 100%; }
-        .donut-chart { position: relative; width: 120px; height: 120px; }
+        .donut-chart { position: relative; width: 120px; height: 120px; flex-shrink: 0; }
         .donut-bg { fill: none; stroke: #f0f0f0; stroke-width: 12; }
         .donut-fg { 
             fill: none; stroke: var(--color-purple); stroke-width: 12; stroke-linecap: round;
@@ -202,9 +217,13 @@
 
         .section-title { font-size: 18px; font-weight: 700; color: #333; margin: 40px 0 20px; display: flex; align-items: center; gap: 8px;}
         .section-badge { background: var(--color-teal); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
-        .c-node { text-align: center; }
-        .c-role { font-size: 15px; font-weight: 700; color: #333; }
-        .c-node.future .c-role { color: var(--color-purple); }
+        
+        .career-flow { display: flex; align-items: center; justify-content: center; gap: 40px; padding: 20px 0; }
+        .c-node { text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .c-tag { font-size: 11px; text-transform: uppercase; color: #999; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .c-role { font-size: 16px; font-weight: 700; color: #333; padding: 8px 16px; background: #f5f5f5; border-radius: 8px; }
+        .c-node.future .c-role { color: var(--color-purple); background: #f4eff9; border: 1px solid var(--color-purple); }
+        .c-arrow { font-size: 20px; color: #ccc; }
 
         .goal-li { position: relative; padding-left: 14px; font-size: 13px; color: #555; margin-bottom: 6px; }
         .goal-li::before { content: '•'; position: absolute; left: 0; color: #ccc; }
@@ -217,7 +236,7 @@
         .fb-input-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
         .fb-input-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 16px; }
         .fb-input-head { font-size: 14px; font-weight: 700; color: var(--color-purple); margin-bottom: 10px; }
-        .fb-textarea { width: 100%; height: 100px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; font-size: 13px; resize: none; outline: none; transition: 0.2s; }
+        .fb-textarea { width: 100%; height: 100px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; font-size: 13px; resize: none; outline: none; transition: 0.2s; font-family: 'Noto Sans KR', sans-serif;}
         .fb-textarea:focus { border-color: var(--color-purple); background: #fdfaff; }
 
         .btn-primary { 
@@ -237,7 +256,7 @@
         .evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .evidence-box { 
             background: #fbfbfb; border: 1px solid #eee; border-radius: 12px; padding: 16px; 
-            position: relative; transition: all 0.2s;
+            position: relative; transition: all 0.2s; display: flex; flex-direction: column;
         }
         .evidence-box.selected {
             background: #f4eff9; border-color: var(--color-purple); box-shadow: 0 4px 10px rgba(85,29,131,0.1);
@@ -248,8 +267,8 @@
         }
 
         .evidence-title { font-size: 13px; font-weight: 700; color: #555; margin-bottom: 10px; }
-        .evidence-content { font-size: 13px; color: #333; line-height: 1.6; min-height: 60px; word-break: keep-all; }
-        .evidence-controls { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; border-top: 1px dashed #eee; padding-top: 8px; }
+        .evidence-content { font-size: 13px; color: #333; line-height: 1.6; min-height: 80px; word-break: keep-all; flex: 1; margin-bottom: 12px;}
+        .evidence-controls { display: flex; justify-content: flex-end; gap: 6px; border-top: 1px dashed #eee; padding-top: 8px; }
         .btn-xs { 
             padding: 4px 8px; font-size: 11px; border-radius: 4px; border: 1px solid #ddd; 
             background: #fff; cursor: pointer; color: #666; transition: 0.2s;
@@ -284,7 +303,10 @@
 
     <!-- 1. 헤더 -->
     <header>
-        <a onclick="resetView()" class="logo-area">LG Chem</a>
+        <a onclick="resetView()" class="logo-area">
+            <div class="logo-symbol"></div>
+            LG Chem
+        </a>
         <input type="text" id="member-search" class="search-box" placeholder="팀원, 부서 검색">
     </header>
 
@@ -672,7 +694,11 @@
         let selectedEvidence = { str: '', imp: '', gro: '' };
 
         /* ================= ONLOAD ================= */
-        window.onload = () => { renderSidebar(); setupSearch(); };
+        // window.onload 대신 안전하게 이벤트 리스너 사용
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSidebar();
+            setupSearch();
+        });
 
         function setupSearch() {
             const input = document.getElementById('member-search');
