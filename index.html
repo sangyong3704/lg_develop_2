@@ -44,10 +44,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .logo-area { 
-            text-decoration: none; color: #fff; font-size: 22px; font-weight: 700; 
-            letter-spacing: -0.5px; cursor: pointer; 
-        }
+        .logo-area { text-decoration: none; color: #fff; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; cursor: pointer; }
         
         .search-box {
             background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
@@ -64,7 +61,7 @@
         /* 3. 사이드바 */
         .sidebar {
             width: var(--sidebar-width); background: #fff; border-right: 1px solid #e0e0e0;
-            display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0;
+            display: flex; flex-direction: column; overflow-y: auto;
         }
         .sidebar-header { padding: 24px 20px 10px; font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; }
         .member-item {
@@ -288,7 +285,7 @@
     <!-- 1. 헤더 -->
     <header>
         <a onclick="resetView()" class="logo-area">LG Chem</a>
-        <input type="text" id="member-search" class="search-box" placeholder="팀원, 부서 검색">
+        <input type="text" id="member-search" class="search-box" placeholder="이름, 부서 검색">
     </header>
 
     <div class="app-container">
@@ -331,6 +328,7 @@
                 <!-- 탭 네비게이션 -->
                 <nav class="nav-tabs-container">
                     <ul class="nav-tabs">
+                        <!-- [수정] 각 li에 고유 ID 부여 -->
                         <li class="tab-item active" id="tab-item-basic" onclick="switchTab('basic', this)"><a class="tab-link">기본정보</a></li>
                         <li class="tab-item" id="tab-item-perf" onclick="switchTab('perf', this)"><a class="tab-link">성과 & 육성</a></li>
                         <li class="tab-item" id="tab-item-feedback" onclick="switchTab('feedback', this)"><a class="tab-link">전달</a></li>
@@ -505,7 +503,7 @@
                             <div class="evidence-grid">
                                 <!-- 강점 근거 -->
                                 <div class="evidence-box" id="box-str">
-                                    <div class="evidence-title">강점 근거</div>
+                                    <div class="evidence-title">강점 근거 (성공 사례)</div>
                                     <div class="evidence-content" id="evidence-str-text"></div>
                                     <div class="evidence-controls">
                                         <button class="btn-xs" onclick="regenerateEvidence('str')">🔄 재생성</button>
@@ -514,7 +512,7 @@
                                 </div>
                                 <!-- 보완점 근거 -->
                                 <div class="evidence-box" id="box-imp">
-                                    <div class="evidence-title">보완점 근거</div>
+                                    <div class="evidence-title">보완점 근거 (아쉬운 사례)</div>
                                     <div class="evidence-content" id="evidence-imp-text"></div>
                                     <div class="evidence-controls">
                                         <button class="btn-xs" onclick="regenerateEvidence('imp')">🔄 재생성</button>
@@ -523,7 +521,7 @@
                                 </div>
                                 <!-- 성장 근거 -->
                                 <div class="evidence-box" id="box-gro">
-                                    <div class="evidence-title">성장 방향 근거</div>
+                                    <div class="evidence-title">성장 방향 제언</div>
                                     <div class="evidence-content" id="evidence-gro-text"></div>
                                     <div class="evidence-controls">
                                         <button class="btn-xs" onclick="regenerateEvidence('gro')">🔄 재생성</button>
@@ -777,11 +775,10 @@
             document.getElementById('dev-comp-goals').innerHTML = goalList(d.compGoals);
             document.getElementById('dev-biz-goals').innerHTML = goalList(d.bizGoals);
 
-            // [수정] 탭 초기화 (무조건 기본정보 탭으로)
+            // 탭 초기화 (무조건 기본정보 탭으로)
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            
-            document.getElementById('tab-item-basic').classList.add('active');
+            document.getElementById('tab-item-basic').classList.add('active'); // ID 수정됨
             document.getElementById('tab-basic').classList.add('active');
 
             resetFeedbackTab();
@@ -836,8 +833,8 @@
                 str: [ "타 부서와의 갈등 상황을 유연하게 조율했습니다.", "동료의 의견을 경청하는 태도로 신뢰를 형성했습니다." ],
                 imp: [ "본인의 의견을 조금 더 명확하게 개진할 필요가 있습니다.", "유관부서에 대한 선제적인 정보 공유가 아쉽습니다." ],
                 gro: [ "전사 차원의 프로젝트를 조율하는 커뮤니케이터로 성장하길 바랍니다." ]
-            },
-            // ... 추가 카테고리 (생략된 부분도 실제로는 존재해야 함) ...
+            }
+            // ... 추가 카테고리 ...
         };
 
         function getContextEvidence(inputText, type) {
@@ -856,7 +853,6 @@
             if (matchedCategory) {
                 const pool = feedbackDictionary[matchedCategory][type];
                 if (pool && pool.length > 0) {
-                    // 랜덤 선택
                     const randomIndex = Math.floor(Math.random() * pool.length);
                     return pool[randomIndex];
                 }
@@ -876,9 +872,7 @@
                 }
             }
 
-            // 3) 최후 Fallback
-            if (type === 'str') return `상위 5%에 해당하는 '${member.coreValues[0].name}' 점수(${member.coreValues[0].score}점)가 이를 뒷받침합니다.`;
-            return `핵심가치 중 '${member.coreValues[4].name}' 점수가 다소 낮아 보완이 필요해 보입니다.`;
+            return "AI 근거 데이터를 불러오지 못했습니다.";
         }
 
         function initAiEvidenceSection() {
@@ -992,7 +986,7 @@
             }
             sentences.push(groBlock);
 
-            // 5. 클로징
+            // 5. 클로징 (과업 vs 관계)
             if (toneProfile.focus === 'task') {
                 if(isLogical) sentences.push(`위 내용에 대한 구체적인 실행 계획(Action Plan)을 수립하여 차주 미팅 시 논의합시다.`);
                 else sentences.push(`어떻게 하면 목표를 더 잘 달성할 수 있을지, 구체적인 방법을 같이 고민해봐요.`);
