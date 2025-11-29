@@ -302,7 +302,7 @@
                     <div class="empty-icon">👥</div>
                     <div class="empty-title">AI 기반 통합 인사이트 프로필</div>
                     <p class="empty-desc">
-                        이 도구는 리더가 구성원의 데이터를 한눈에 정리하고,<br>
+                        이 도구는 리더가 팀원의 데이터를 한눈에 정리하고,<br>
                         더 공정하고 설득력 있는 피드백을 준비할 수 있도록 설계되었습니다.
                     </p>
                     <div class="feature-list">
@@ -468,7 +468,7 @@
                         <!-- A. 리더 입력 -->
                         <div class="fb-section">
                             <span class="fb-label">1. 피드백 핵심 키워드 입력</span>
-                            <p class="fb-desc">구성원에게 전달하고 싶은 핵심 메시지를 각 항목별로 1문장씩 작성해 주세요.</p>
+                            <p class="fb-desc">팀원에게 전달하고 싶은 핵심 메시지를 각 항목별로 1문장씩 작성해 주세요.</p>
                             
                             <div class="fb-input-grid">
                                 <div class="fb-input-card">
@@ -494,12 +494,12 @@
                         <!-- B. AI 근거 -->
                         <div id="section-evidence" class="fb-section" style="display:none;">
                             <span class="fb-label">2. 데이터 기반 근거 선택 (AI Suggestion)</span>
-                            <p class="fb-desc">입력하신 키워드와 구성원의 데이터를 바탕으로 AI가 구체적인 근거를 제안합니다. [선택]을 누르면 피드백에 반영됩니다.</p>
+                            <p class="fb-desc">AI가 입력 키워드와 연관된 <strong>실제 과제 사례</strong>를 찾아 근거를 제안합니다.</p>
                             
                             <div class="evidence-grid">
                                 <!-- 강점 근거 -->
                                 <div class="evidence-box" id="box-str">
-                                    <div class="evidence-title">강점 근거</div>
+                                    <div class="evidence-title">강점 근거 (성공 사례)</div>
                                     <div class="evidence-content" id="evidence-str-text"></div>
                                     <div class="evidence-controls">
                                         <button class="btn-xs" onclick="regenerateEvidence('str')">🔄 재생성</button>
@@ -508,7 +508,7 @@
                                 </div>
                                 <!-- 보완점 근거 -->
                                 <div class="evidence-box" id="box-imp">
-                                    <div class="evidence-title">보완점 근거</div>
+                                    <div class="evidence-title">보완점 근거 (아쉬운 사례)</div>
                                     <div class="evidence-content" id="evidence-imp-text"></div>
                                     <div class="evidence-controls">
                                         <button class="btn-xs" onclick="regenerateEvidence('imp')">🔄 재생성</button>
@@ -517,7 +517,7 @@
                                 </div>
                                 <!-- 성장 근거 -->
                                 <div class="evidence-box" id="box-gro">
-                                    <div class="evidence-title">성장 방향 근거</div>
+                                    <div class="evidence-title">성장 방향 제언</div>
                                     <div class="evidence-content" id="evidence-gro-text"></div>
                                     <div class="evidence-controls">
                                         <button class="btn-xs" onclick="regenerateEvidence('gro')">🔄 재생성</button>
@@ -588,7 +588,13 @@
                 history: [ { date: '2023.01', title: 'DX 추진팀 이동', desc: '전사 AI 모델링 리드' }, { date: '2019.01', title: '신입 입사', desc: '석유화학본부 생산기술팀' } ],
                 kpiTotal: 92, kpiDesc: '전사 데이터 파이프라인 구축 및 모델 정확도 목표 초과 달성',
                 coreValues: [ { name: 'Customer Focus', score: 95 }, { name: 'Sustainability', score: 85 }, { name: 'Agility', score: 90 }, { name: 'Passion', score: 92 }, { name: 'Collaboration', score: 80 } ],
-                currRole: 'Data Scientist', goalRole: 'Data Tech Lead', compGoals: ['MLOps 구축 경험', 'AWS 자격 취득'], bizGoals: ['생성형 AI 챗봇', '공정 이상 탐지']
+                currRole: 'Data Scientist', goalRole: 'Data Tech Lead', compGoals: ['MLOps 구축 경험', 'AWS 자격 취득'], bizGoals: ['생성형 AI 챗봇', '공정 이상 탐지'],
+                
+                // [NEW] 구체적인 프로젝트 로그 (근거용)
+                projectLog: {
+                    success: { name: "전사 데이터 파이프라인 구축", result: "데이터 처리 속도를 200% 향상시키는", method: "병렬 처리 아키텍처를 선제적으로 도입한" },
+                    improve: { name: "현장 적용 파일럿 테스트", issue: "일정 지연이 발생했는데", missing: "현업 부서와의 초기 요구사항 조율" }
+                }
             },
             '박재현': {
                 job: 'AI Researcher', avatar: '👨🏻‍🔬', years: '8년 1개월', joinDate: '2016.03.02', eval: 'A',
@@ -599,7 +605,12 @@
                 history: [ { date: '2022.01', title: 'AI 선행연구팀', desc: '비전 검사 알고리즘 고도화' } ],
                 kpiTotal: 88, kpiDesc: '신규 알고리즘 특허 2건 출원 및 학회 발표',
                 coreValues: [ { name: 'Customer Focus', score: 80 }, { name: 'Sustainability', score: 75 }, { name: 'Agility', score: 95 }, { name: 'Passion', score: 90 }, { name: 'Collaboration', score: 70 } ],
-                currRole: 'AI Researcher', goalRole: 'Principal Researcher', compGoals: ['논문 구현', '학회 네트워킹'], bizGoals: ['비전 검사기 상용화', '불량률 감소']
+                currRole: 'AI Researcher', goalRole: 'Principal Researcher', compGoals: ['논문 구현', '학회 네트워킹'], bizGoals: ['비전 검사기 상용화', '불량률 감소'],
+                
+                projectLog: {
+                    success: { name: "비전 검사 알고리즘 고도화", result: "검출 정확도 99.5%를 달성하는", method: "최신 논문의 Transformer 모델을 빠르게 적용해본" },
+                    improve: { name: "현장 상용화 프로젝트", issue: "현장 엔지니어의 피드백 반영이 늦어졌는데", missing: "사용자 관점에서의 UI/UX 고려" }
+                }
             },
             '박정호': {
                 job: 'Project Manager', avatar: '👨🏻‍💼', years: '12년', joinDate: '2012.01.10', eval: 'A+',
@@ -610,7 +621,12 @@
                 history: [ { date: '2020.01', title: 'DX PM', desc: '스마트팩토리 구축' } ],
                 kpiTotal: 95, kpiDesc: '대형 프로젝트 납기 100% 준수 및 예산 절감',
                 coreValues: [ { name: 'Customer Focus', score: 90 }, { name: 'Sustainability', score: 85 }, { name: 'Agility', score: 88 }, { name: 'Passion', score: 92 }, { name: 'Collaboration', score: 98 } ],
-                currRole: 'Project Manager', goalRole: 'Center Leader', compGoals: ['PMP 갱신', '애자일 코칭'], bizGoals: ['DX 성공적 런칭']
+                currRole: 'Project Manager', goalRole: 'Center Leader', compGoals: ['PMP 갱신', '애자일 코칭'], bizGoals: ['DX 성공적 런칭'],
+                
+                projectLog: {
+                    success: { name: "스마트팩토리 구축", result: "납기를 100% 준수하고 예산을 15% 절감하는", method: "애자일 기반의 스프린트 운영 방식을 도입한" },
+                    improve: { name: "레거시 시스템 마이그레이션", issue: "기술적 이슈로 인한 지연이 있었는데", missing: "초기 기술 검토 단계에서의 전문가 리뷰" }
+                }
             },
             '박재원': {
                 job: 'Software Eng.', avatar: '👨🏻‍💻', years: '3년', joinDate: '2021.02', eval: 'A',
@@ -621,7 +637,12 @@
                 history: [ { date: '2021.02', title: '신입 입사', desc: '플랫폼 개발' } ],
                 kpiTotal: 85, kpiDesc: '레거시 코드 리팩토링 및 신규 기능 개발 완료',
                 coreValues: [ { name: 'Customer Focus', score: 85 }, { name: 'Sustainability', score: 80 }, { name: 'Agility', score: 85 }, { name: 'Passion', score: 90 }, { name: 'Collaboration', score: 88 } ],
-                currRole: 'Software Eng.', goalRole: 'Architect', compGoals: ['Kubernetes', 'MSA'], bizGoals: ['안정성 99.9%']
+                currRole: 'Software Eng.', goalRole: 'Architect', compGoals: ['Kubernetes', 'MSA'], bizGoals: ['안정성 99.9%'],
+                
+                projectLog: {
+                    success: { name: "신규 기능 개발", result: "사용자 요청 기능을 2주 만에 배포하는", method: "빠른 프로토타이핑과 사용자 테스트" },
+                    improve: { name: "레거시 코드 리팩토링", issue: "사이드 이펙트가 발생했는데", missing: "테스트 코드(TDD) 작성 및 커버리지 확보" }
+                }
             },
             '하유림': {
                 job: 'UX Designer', avatar: '👩🏻‍🎨', years: '4년', joinDate: '2019.11', eval: 'A',
@@ -632,7 +653,12 @@
                 history: [ { date: '2019.11', title: '입사', desc: '디자인센터' } ],
                 kpiTotal: 90, kpiDesc: '디자인 시스템 구축 및 사용자 만족도 상승',
                 coreValues: [ { name: 'Customer Focus', score: 98 }, { name: 'Sustainability', score: 80 }, { name: 'Agility', score: 85 }, { name: 'Passion', score: 90 }, { name: 'Collaboration', score: 92 } ],
-                currRole: 'UX Designer', goalRole: 'Product Designer', compGoals: ['Figma 심화'], bizGoals: ['이탈률 감소']
+                currRole: 'UX Designer', goalRole: 'Product Designer', compGoals: ['Figma 심화'], bizGoals: ['이탈률 감소'],
+                
+                projectLog: {
+                    success: { name: "디자인 시스템 구축", result: "개발-디자인 협업 효율을 30% 개선하는", method: "공통 컴포넌트 표준화 및 가이드라인 배포" },
+                    improve: { name: "신규 서비스 UX 기획", issue: "데이터 기반의 근거가 부족했는데", missing: "사용자 행동 데이터(Log) 분석" }
+                }
             }
         };
         
@@ -650,7 +676,7 @@
                     const val = this.value.trim();
                     const found = members.find(m => m.includes(val));
                     if (found) { selectMember(found); this.value = ''; } 
-                    else { alert('구성원을 찾을 수 없습니다.'); }
+                    else { alert('팀원을 찾을 수 없습니다.'); }
                 }
             });
         }
@@ -755,189 +781,8 @@
             document.getElementById('tab-' + id).classList.add('active');
         }
 
-        /* ================= FEEDBACK LOGIC (Extensive Dictionary & Tone AI) ================= */
+        /* ================= FEEDBACK LOGIC (Project-based Narrative) ================= */
         
-        // 1. 방대한 키워드/상황별 근거 데이터 (12개 카테고리)
-        const feedbackDictionary = {
-            'Analytic': {
-                keywords: ['분석', '논리', '데이터', '객관', '근거', '냉철', '수치', '사실', '정확'],
-                str: [
-                    "객관적인 데이터에 기반하여 상황을 냉철하게 판단하는 능력이 매우 탁월합니다.",
-                    "복잡한 문제를 논리적으로 분해하고, 수치에 근거해 명확한 해결책을 제시하는 점이 인상적입니다.",
-                    "모호한 상황에서도 데이터를 통해 핵심 인사이트를 도출해내는 역량이 돋보입니다."
-                ],
-                imp: [
-                    "다만, 지나치게 논리적인 접근보다는 상황에 따라 팀원의 감정을 고려한 유연한 소통도 필요해 보입니다.",
-                    "데이터 분석 결과뿐만 아니라, 그것이 비즈니스에 미치는 정성적인 영향까지 폭넓게 고려한다면 더 좋을 것입니다.",
-                    "수치적인 완벽함을 추구하다가 의사결정 타이밍이 늦어지지 않도록 주의가 필요합니다."
-                ],
-                gro: [
-                    "데이터 사이언티스트를 넘어, 데이터로 비즈니스 전략을 제안하는 전략가로 성장하길 기대합니다.",
-                    "본인의 분석 역량을 팀원들에게 전파하여, 팀 전체의 데이터 리터러시를 높이는 역할을 해주었으면 합니다."
-                ]
-            },
-            'Communication': {
-                keywords: ['소통', '경청', '설득', '협업', '공유', '피드백', '대화', '관계', '말하기'],
-                str: [
-                    "타 부서와의 갈등 상황에서도 유연하게 대처하며 원만한 합의를 이끌어내는 소통 능력이 뛰어납니다.",
-                    "항상 동료의 의견을 경청하고 존중하는 태도로 팀 내 신뢰를 굳건히 형성하고 있습니다.",
-                    "복잡한 이슈를 이해하기 쉽게 설명하여 이해관계자들을 설득하는 능력이 탁월합니다."
-                ],
-                imp: [
-                    "회의 시 본인의 의견을 조금 더 명확하고 자신감 있게 개진한다면 좋겠습니다.",
-                    "정보 공유 시점이나 방식에 있어, 유관부서가 미리 인지할 수 있도록 선제적인 소통이 필요합니다.",
-                    "좋은 관계 유지도 중요하지만, 필요할 때는 건설적인 비판이나 반대 의견도 과감히 제시할 수 있어야 합니다."
-                ],
-                gro: [
-                    "팀 내부 소통을 넘어, 전사 차원의 프로젝트를 조율하는 커뮤니케이터로 성장하길 바랍니다.",
-                    "이해관계가 상충하는 복잡한 상황에서도 윈-윈을 이끌어내는 협상 전문가가 되기를 기대합니다."
-                ]
-            },
-            'Detail': {
-                keywords: ['꼼꼼', '섬세', '디테일', '완벽', '치밀', '실수', '검토'],
-                str: [
-                    "작은 오류도 놓치지 않는 꼼꼼함으로 업무의 완성도를 크게 높이는 점을 칭찬합니다.",
-                    "디테일한 부분까지 챙기는 치밀함 덕분에 프로젝트 리스크를 사전에 예방할 수 있었습니다.",
-                    "보고서나 산출물의 품질이 항상 일정 수준 이상으로 유지되는 것은 큰 장점입니다."
-                ],
-                imp: [
-                    "때로는 세부적인 디테일에 몰두하느라 전체적인 일정이나 큰 그림을 놓치는 경우가 있습니다.",
-                    "완벽주의 성향으로 인해 업무 속도가 늦어질 수 있으니, 중요도에 따른 완급 조절이 필요합니다."
-                ],
-                gro: [
-                    "디테일 관리 능력을 바탕으로, 대규모 프로젝트의 품질을 관리하는 QA 리더로 성장할 수 있을 것입니다.",
-                    "실무의 꼼꼼함을 유지하면서도, 거시적인 관점에서 프로젝트를 바라보는 시야를 넓혀 나가길 바랍니다."
-                ]
-            },
-            'Innovation': {
-                keywords: ['창의', '혁신', '아이디어', '개선', '새로운', '도전', '변화'],
-                str: [
-                    "기존 관행에 얽매이지 않고 새로운 아이디어를 제안하여 프로세스를 획기적으로 개선하는 모습이 인상적입니다.",
-                    "실패를 두려워하지 않고 도전적으로 새로운 기술이나 방식을 도입하는 태도가 훌륭합니다.",
-                    "창의적인 문제 해결 능력을 발휘하여 고질적인 이슈를 해결한 점을 높이 평가합니다."
-                ],
-                imp: [
-                    "새로운 아이디어를 제안하는 것에 그치지 않고, 실제 성과로 이어지도록 끝까지 실행하는 끈기가 필요합니다.",
-                    "혁신적인 시도도 좋지만, 기존 프로세스의 안정성이나 팀의 리소스를 고려한 현실적인 접근도 중요합니다."
-                ],
-                gro: [
-                    "팀의 기술적 혁신을 주도하는 이노베이터(Innovator)로서 조직 문화를 변화시키는 역할을 기대합니다.",
-                    "단순한 개선을 넘어, 비즈니스 모델 자체를 혁신할 수 있는 창조적인 리더로 성장하길 바랍니다."
-                ]
-            },
-            'Leadership': {
-                keywords: ['리더십', '솔선수범', '동기부여', '코칭', '주도', '책임감', '리딩'],
-                str: [
-                    "힘든 업무도 솔선수범하여 맡음으로써 팀원들에게 긍정적인 동기부여를 주고 있습니다.",
-                    "프로젝트의 방향성을 명확히 제시하고 팀원들을 이끌어가는 리더십이 돋보입니다.",
-                    "후배 사원들의 성장을 위해 적극적으로 코칭하고 멘토링하는 모습이 훌륭합니다."
-                ],
-                imp: [
-                    "리더로서 직접 실무를 챙기기보다는, 적절한 위임(Delegation)을 통해 팀원들을 성장시킬 필요가 있습니다.",
-                    "팀원들의 다양한 의견을 수렴하는 과정에서 조금 더 포용적인 태도를 보이면 좋겠습니다."
-                ],
-                gro: [
-                    "한 팀을 넘어 여러 조직을 아우르는 통합 리더십을 갖춘 관리자로 성장하기를 기대합니다.",
-                    "조직의 비전과 개인의 목표를 일치시켜 성과를 극대화하는 리더가 되기를 바랍니다."
-                ]
-            },
-            'Passion': {
-                keywords: ['열정', '적극', '긍정', '도전', '끈기', '에너지', '몰입'],
-                str: [
-                    "매사 적극적이고 열정적인 태도로 업무에 임하여 팀 분위기를 활기차게 만듭니다.",
-                    "어려운 과제에도 굴하지 않고 끈기 있게 도전하는 모습이 타의 모범이 됩니다.",
-                    "긍정적인 마인드로 변화를 수용하고 주도적으로 업무를 수행하는 점을 칭찬합니다."
-                ],
-                imp: [
-                    "의욕이 앞서 본인의 역량을 초과하는 업무를 무리하게 맡지 않도록 조절이 필요합니다.",
-                    "열정적인 것은 좋으나, 때로는 차분하게 상황을 돌아보는 여유를 가지면 좋겠습니다."
-                ],
-                gro: [
-                    "이러한 열정을 바탕으로, 팀의 핵심 인재를 넘어 조직 문화를 선도하는 앰배서더가 되길 바랍니다."
-                ]
-            },
-            'Speed': {
-                keywords: ['속도', '민첩', '빠른', '납기', '신속', '효율'],
-                str: [
-                    "빠른 실행력으로 업무를 신속하게 처리하여 전체 프로젝트 일정 단축에 기여했습니다.",
-                    "급변하는 상황에도 민첩하게 대응하여 업무 공백을 최소화하는 능력이 매우 뛰어납니다."
-                ],
-                imp: [
-                    "속도도 중요하지만, 결과물의 정확성을 한 번 더 검토하는 습관을 들이면 완벽할 것입니다.",
-                    "빠른 처리에 집중하다 보니, 유관부서와의 협의 과정이 다소 생략되는 경우가 있어 주의가 필요합니다."
-                ],
-                gro: [
-                    "개인의 업무 효율성을 넘어, 팀 전체의 생산성을 높일 수 있는 워크플로우를 설계해 주길 기대합니다."
-                ]
-            },
-            'ProblemSolving': {
-                keywords: ['해결', '트러블슈팅', '대응', '위기', '이슈'],
-                str: [
-                    "예상치 못한 이슈 발생 시에도 당황하지 않고 침착하게 원인을 파악하여 해결하는 능력이 뛰어납니다.",
-                    "문제의 본질을 꿰뚫어보는 통찰력으로 근본적인 해결책을 제시하는 점이 훌륭합니다."
-                ],
-                imp: [
-                    "문제 발생 시 즉각적인 대응도 중요하지만, 재발 방지를 위한 프로세스 수립까지 챙겨주었으면 합니다.",
-                    "혼자 해결하기 어려운 문제는 적시에 공유하여 팀 차원의 대응이 가능하도록 해야 합니다."
-                ],
-                gro: [
-                    "복잡한 기술적 난제뿐만 아니라, 조직 내 갈등이나 비즈니스 이슈까지 해결하는 Problem Solver가 되길 바랍니다."
-                ]
-            },
-            'Responsibility': {
-                keywords: ['책임', '완수', '마무리', '신뢰', '약속'],
-                str: [
-                    "맡은 업무는 무슨 일이 있어도 기한 내에 완수해내는 강한 책임감이 돋보입니다.",
-                    "동료들에게 '믿고 맡길 수 있는 사람'이라는 신뢰를 주고 있는 점이 가장 큰 강점입니다."
-                ],
-                imp: [
-                    "책임감이 강하여 과도한 업무를 혼자 떠안으려 하는 경향이 있는데, 적절히 도움을 요청하는 것도 능력입니다."
-                ],
-                gro: [
-                    "본인의 업무뿐만 아니라, 팀 전체의 성과에 대해 책임감을 가지는 리더십을 발휘해 주길 기대합니다."
-                ]
-            },
-            'Mentoring': {
-                keywords: ['후배', '교육', '양성', '가이드', '지식', '공유'],
-                str: [
-                    "본인의 지식과 노하우를 아낌없이 공유하여 동료들의 성장을 돕는 모습이 인상적입니다.",
-                    "신규 입사자가 조직에 빠르게 적응할 수 있도록 세심하게 챙겨주는 멘토링 역량이 뛰어납니다."
-                ],
-                imp: [
-                    "멘토링 시 정답을 알려주기보다는, 스스로 생각하고 해결할 수 있도록 질문을 던지는 코칭 방식을 활용해 보세요."
-                ],
-                gro: [
-                    "체계적인 교육 커리큘럼을 개발하여 조직 전체의 역량을 상향 평준화하는 사내 강사로 성장하길 바랍니다."
-                ]
-            },
-            'Adaptability': {
-                keywords: ['적응', '유연', '변화', '수용'],
-                str: [
-                    "조직 개편이나 R&R 변경 등 급격한 변화에도 빠르게 적응하며 안정적인 성과를 내고 있습니다.",
-                    "새로운 툴이나 프로세스 도입에 거부감 없이 유연하게 대처하는 태도가 훌륭합니다."
-                ],
-                imp: [
-                    "변화에 적응하는 것을 넘어, 변화를 선도하고 동료들의 변화 관리를 돕는 적극성이 필요합니다."
-                ],
-                gro: [
-                    "불확실성이 높은 미래 환경에서도 중심을 잡고 팀을 이끌어갈 수 있는 Change Agent가 되길 기대합니다."
-                ]
-            },
-            'Strategic': {
-                keywords: ['전략', '기획', '큰그림', '방향', '비전'],
-                str: [
-                    "눈앞의 업무뿐만 아니라 중장기적인 관점에서 전략을 수립하고 기획하는 능력이 탁월합니다.",
-                    "시장 트렌드와 경쟁사 동향을 파악하여 우리 조직이 나아가야 할 방향을 명확히 제시합니다."
-                ],
-                imp: [
-                    "전략적인 기획이 실제 실행으로 이어질 수 있도록, 구체적인 액션 플랜을 수립하는 데 더 신경 써야 합니다."
-                ],
-                gro: [
-                    "사업부 전체의 비즈니스 전략을 수립하고 실행하는 핵심 전략가로 성장할 잠재력이 충분합니다."
-                ]
-            }
-        };
-
         function resetFeedbackTab() {
             document.getElementById('input-str').value = '';
             document.getElementById('input-imp').value = '';
@@ -953,34 +798,20 @@
             });
         }
 
-        // 입력 텍스트에서 키워드를 찾아 해당하는 카테고리의 문장을 반환
+        // [핵심] 프로젝트 기반 스토리텔링 생성 함수
         function getContextEvidence(inputText, type) {
             const member = teamDB[currentMemberKey];
-            if (!member) return "";
+            if (!member || !member.projectLog) return "";
 
-            let matchedCategory = null;
-            // 입력 텍스트에 매칭되는 키워드 찾기
-            for (const cat in feedbackDictionary) {
-                if (feedbackDictionary[cat].keywords.some(k => inputText.includes(k))) {
-                    matchedCategory = cat;
-                    break;
-                }
-            }
+            const succ = member.projectLog.success;
+            const imp = member.projectLog.improve;
 
-            // 매칭된 카테고리가 있으면 해당 풀 사용
-            if (matchedCategory) {
-                const pool = feedbackDictionary[matchedCategory][type];
-                if (pool && pool.length > 0) return pool[Math.floor(Math.random() * pool.length)];
-            }
-
-            // 매칭 없으면 기본 데이터 기반 문장 (Fallback)
             if (type === 'str') {
-                return `상위 5%에 해당하는 '${member.coreValues[0].name}' 점수(${member.coreValues[0].score}점)가 이를 뒷받침합니다.`;
+                return `예를 들어 연초에 '${succ.name}' 과제를 목표로 하였는데, 목표대로 완성되어 ${succ.result} 성과를 냈습니다. 특히 업무 방식에 있어 '${succ.method}' 점을 시도해 본 것이 매우 의미 있었다고 생각합니다.`;
             } else if (type === 'imp') {
-                const lowCV = member.coreValues.reduce((min, cur) => cur.score < min.score ? cur : min);
-                return `핵심가치 중 '${lowCV.name}' 항목의 점수가 ${lowCV.score}점으로, 개선의 여지가 데이터로 나타나고 있습니다.`;
-            } else {
-                return `향후 '${member.goalRole}'로 성장하기 위해 꼭 필요한 역량입니다.`;
+                return `다만 '${imp.name}' 과제는 계획했던 만큼 달성되지 못했는데, 진행하는 과정에서 '${imp.missing}' 점을 시도해보지 않은 점은 아쉽습니다.`;
+            } else { // gro
+                return `앞으로는 이러한 개선점('${imp.missing}')을 보완한다면, 향후 '${member.goalRole}'로서 더 큰 성과를 낼 수 있을 것이라 생각합니다.`;
             }
         }
 
@@ -1031,7 +862,6 @@
             generateFinalFeedback();
         }
 
-        // 2. 어조 변환 로직 (Natural Language Generation)
         function generateFinalFeedback() {
             const strInput = document.getElementById('input-str').value.trim();
             const impInput = document.getElementById('input-imp').value.trim();
@@ -1043,60 +873,48 @@
             }
 
             let sentences = [];
-            const isLogical = toneProfile.style === 'logical'; // 논리적 vs 부드러움
+            
+            // 어조에 따른 서술어 변형
+            const isLogical = toneProfile.style === 'logical';
+            const isSoft = toneProfile.style === 'soft';
 
             // 1. 오프닝
-            if (isLogical) {
-                sentences.push(`금년도 성과 평가 결과를 바탕으로 피드백을 전달합니다.`);
-            } else {
-                sentences.push(`올 한 해 동안 팀을 위해 헌신해 주셔서 정말 고마워요.`);
-            }
+            if (isLogical) sentences.push(`금년도 성과에 대한 종합 피드백을 전달합니다.`);
+            else sentences.push(`올 한 해 동안 팀을 위해 정말 많이 애써주셔서 고마워요.`);
 
             // 2. 강점 파트
             if (strInput) {
                 let s = "";
-                if (isLogical) {
-                    s = `우선, ${strInput} 점을 높게 평가합니다.`;
-                    if (selectedEvidence.str) s += ` 이는 ${selectedEvidence.str}`;
-                } else {
-                    s = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
-                    if (selectedEvidence.str) s += ` 실제로 ${selectedEvidence.str}`;
-                }
+                if (isLogical) s = `우선, ${strInput} 점은 매우 긍정적으로 평가됩니다.`;
+                else s = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
+                
+                if (selectedEvidence.str) s += ` ${selectedEvidence.str}`;
                 sentences.push(s);
             }
 
             // 3. 보완 파트
             if (impInput) {
                 let i = "";
-                if (isLogical) {
-                    i = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
-                    if (selectedEvidence.imp) i += ` 데이터상으로도 ${selectedEvidence.imp}`;
-                } else {
-                    i = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
-                    if (selectedEvidence.imp) i += ` ${selectedEvidence.imp}`;
-                }
+                if (isLogical) i = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
+                else i = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
+                
+                if (selectedEvidence.imp) i += ` ${selectedEvidence.imp}`;
                 sentences.push(i);
             }
 
             // 4. 성장 파트
             if (groInput) {
                 let g = "";
-                if (isLogical) {
-                    g = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
-                    if (selectedEvidence.gro) g += ` ${selectedEvidence.gro}`;
-                } else {
-                    g = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
-                    if (selectedEvidence.gro) g += ` ${selectedEvidence.gro}`;
-                }
+                if (isLogical) g = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
+                else g = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
+                
+                if (selectedEvidence.gro) g += ` ${selectedEvidence.gro}`;
                 sentences.push(g);
             }
 
             // 5. 클로징
-            if (isLogical) {
-                sentences.push(`위 내용에 대한 구체적인 실행 계획(Action Plan)을 수립하여 차주 미팅 시 논의합시다.`);
-            } else {
-                sentences.push(`언제든 도움이 필요하거나 힘든 점이 있다면 편하게 이야기해주세요. 항상 응원합니다.`);
-            }
+            if (isLogical) sentences.push(`위 내용에 대한 구체적인 실행 계획(Action Plan)을 수립하여 차주 미팅 시 논의합시다.`);
+            else sentences.push(`언제든 도움이 필요하거나 힘든 점이 있다면 편하게 이야기해주세요. 항상 응원합니다.`);
 
             document.getElementById('final-feedback-text').value = sentences.join("\n\n");
         }
