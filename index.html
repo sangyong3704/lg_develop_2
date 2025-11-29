@@ -44,7 +44,10 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .logo-area { text-decoration: none; color: #fff; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; cursor: pointer; }
+        .logo-area { 
+            text-decoration: none; color: #fff; font-size: 22px; font-weight: 700; 
+            letter-spacing: -0.5px; cursor: pointer; 
+        }
         
         .search-box {
             background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
@@ -61,7 +64,7 @@
         /* 3. 사이드바 */
         .sidebar {
             width: var(--sidebar-width); background: #fff; border-right: 1px solid #e0e0e0;
-            display: flex; flex-direction: column; overflow-y: auto;
+            display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0;
         }
         .sidebar-header { padding: 24px 20px 10px; font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; }
         .member-item {
@@ -270,7 +273,7 @@
 
         /* Final Preview */
         .final-box { background: #fff; border: 1px solid var(--color-purple); border-radius: 12px; padding: 24px; min-height: 150px; }
-        .final-text { width: 100%; border: none; outline: none; font-size: 15px; line-height: 1.8; color: #333; resize: none; height: 200px; font-family: 'Noto Sans KR', sans-serif; }
+        .final-text { width: 100%; border: none; outline: none; font-size: 15px; line-height: 1.8; color: #333; resize: none; height: 160px; font-family: 'Noto Sans KR', sans-serif; }
         .action-row { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
 
         /* 탭 전환 */
@@ -328,7 +331,6 @@
                 <!-- 탭 네비게이션 -->
                 <nav class="nav-tabs-container">
                     <ul class="nav-tabs">
-                        <!-- [수정] ID 부여: tab-item-basic -->
                         <li class="tab-item active" id="tab-item-basic" onclick="switchTab('basic', this)"><a class="tab-link">기본정보</a></li>
                         <li class="tab-item" id="tab-item-perf" onclick="switchTab('perf', this)"><a class="tab-link">성과 & 육성</a></li>
                         <li class="tab-item" id="tab-item-feedback" onclick="switchTab('feedback', this)"><a class="tab-link">전달</a></li>
@@ -834,8 +836,8 @@
                 str: [ "타 부서와의 갈등 상황을 유연하게 조율했습니다.", "동료의 의견을 경청하는 태도로 신뢰를 형성했습니다." ],
                 imp: [ "본인의 의견을 조금 더 명확하게 개진할 필요가 있습니다.", "유관부서에 대한 선제적인 정보 공유가 아쉽습니다." ],
                 gro: [ "전사 차원의 프로젝트를 조율하는 커뮤니케이터로 성장하길 바랍니다." ]
-            }
-            // ... 추가 카테고리 ...
+            },
+            // ... 추가 카테고리 (생략된 부분도 실제로는 존재해야 함) ...
         };
 
         function getContextEvidence(inputText, type) {
@@ -948,49 +950,47 @@
 
             let sentences = [];
             const isLogical = toneProfile.style === 'logical';
-            
-            // [어조 변환 함수]
-            const modifyEnding = (text, mode) => {
-                if(!text) return "";
-                if(mode === 'soft') {
-                    return text.replace(/합니다/g, '해요').replace(/했습니다/g, '했어요').replace(/입니다/g, '이에요').replace(/생각합니다/g, '생각해요').replace(/아쉽습니다/g, '조금 아쉬웠어요');
-                }
-                return text; // Logical은 그대로 (합니다체)
-            };
+            const isSoft = toneProfile.style === 'soft';
+
+            // [Helper] 어조 변환기
+            const toSoft = (text) => text.replace(/합니다/g, '해요').replace(/했습니다/g, '했어요').replace(/입니다/g, '이에요').replace(/생각합니다/g, '생각해요').replace(/아쉽습니다/g, '조금 아쉬웠어요');
 
             // 1. 오프닝
-            if (isLogical) sentences.push(`금년도 성과에 대한 종합 피드백을 전달합니다.`);
-            else sentences.push(`올 한 해 동안 팀을 위해 정말 많이 애써주셔서 고마워요.`);
-
-            // 2. 강점 파트
-            if (strInput) {
-                let s = "";
-                if (isLogical) s = `우선, ${strInput} 점은 매우 긍정적으로 평가됩니다.`;
-                else s = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
-                
-                if (selectedEvidence.str) s += ` ${modifyEnding(selectedEvidence.str, isLogical?'logical':'soft')}`;
-                sentences.push(s);
+            if (isLogical) {
+                sentences.push(`금년도 성과 평가 결과를 바탕으로 종합 피드백을 전달합니다.`);
+            } else {
+                sentences.push(`올 한 해 동안 팀을 위해 헌신해 주셔서 진심으로 고마워요.`);
             }
+
+            // 2. 강점 파트 (입력 + 근거)
+            let strBlock = "";
+            if (isLogical) strBlock = `우선, ${strInput} 점은 매우 긍정적으로 평가됩니다.`;
+            else strBlock = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
+            
+            if (selectedEvidence.str) {
+                strBlock += isSoft ? ` ${toSoft(selectedEvidence.str)}` : ` ${selectedEvidence.str}`;
+            }
+            sentences.push(strBlock);
 
             // 3. 보완 파트
-            if (impInput) {
-                let i = "";
-                if (isLogical) i = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
-                else i = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
-                
-                if (selectedEvidence.imp) i += ` ${modifyEnding(selectedEvidence.imp, isLogical?'logical':'soft')}`;
-                sentences.push(i);
+            let impBlock = "";
+            if (isLogical) impBlock = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
+            else impBlock = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
+            
+            if (selectedEvidence.imp) {
+                impBlock += isSoft ? ` ${toSoft(selectedEvidence.imp)}` : ` ${selectedEvidence.imp}`;
             }
+            sentences.push(impBlock);
 
             // 4. 성장 파트
-            if (groInput) {
-                let g = "";
-                if (isLogical) g = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
-                else g = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
-                
-                if (selectedEvidence.gro) g += ` ${modifyEnding(selectedEvidence.gro, isLogical?'logical':'soft')}`;
-                sentences.push(g);
+            let groBlock = "";
+            if (isLogical) groBlock = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
+            else groBlock = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
+            
+            if (selectedEvidence.gro) {
+                groBlock += isSoft ? ` ${toSoft(selectedEvidence.gro)}` : ` ${selectedEvidence.gro}`;
             }
+            sentences.push(groBlock);
 
             // 5. 클로징
             if (toneProfile.focus === 'task') {
