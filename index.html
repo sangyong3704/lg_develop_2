@@ -14,7 +14,6 @@
             --color-magenta: #D7177B;
             --color-purple: #551D83;
             --color-lightblue: #70C0E6;
-            --color-teal: #008785;
             --color-bg-gray: #F5F5F5;
             --sidebar-width: 260px;
             --header-height: 64px;
@@ -32,51 +31,87 @@
             overflow: hidden;
         }
 
-        /* ================= 로그인 페이지 스타일 ================= */
+        /* ================= [최종] 로그인 페이지 스타일 ================= */
         #login-page {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #f0f2f5;
+            /* 배경: 완전한 흰색 */
+            background-color: #ffffff;
             display: flex; align-items: center; justify-content: center;
             z-index: 9999;
         }
 
+        /* 로그인 카드 */
         .login-card {
-            background: #fff; padding: 60px 50px; border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            background: #ffffff;
+            padding: 60px 50px; 
             width: 100%; max-width: 420px;
             text-align: center;
-            border: 1px solid #eee;
         }
 
+        /* [수정] 로고 그라디언트 좌우 반전: Magenta -> Purple -> Light Blue */
         .login-logo {
-            font-size: 36px; font-weight: 900; letter-spacing: -0.5px;
+            font-size: 42px; font-weight: 900; letter-spacing: -0.5px;
             margin-bottom: 40px;
-            background: linear-gradient(90deg, var(--color-purple) 0%, var(--color-magenta) 100%);
+            
+            /* 좌우 반전된 그라디언트 적용 */
+            background: linear-gradient(
+                90deg, 
+                var(--color-magenta) 0%,     /* 시작: 마젠타 (왼쪽) */
+                var(--color-purple) 50%,     /* 중간: 보라색 */
+                var(--color-lightblue) 100%  /* 끝: 라이트 블루 (오른쪽) */
+            );
+            
+            /* 텍스트에만 그라디언트 적용 */
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
         }
 
-        .input-group { margin-bottom: 16px; text-align: left; }
-        .input-label { font-size: 12px; font-weight: 700; color: #888; margin-bottom: 6px; display: block; margin-left: 4px; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-label { 
+            font-size: 13px; font-weight: 700; color: #555; 
+            margin-bottom: 8px; display: block; 
+        }
         
         .login-input {
-            width: 100%; padding: 14px 16px; border: 1px solid #ddd;
+            width: 100%; padding: 14px 16px; 
+            border: 1px solid #ddd;
             border-radius: 8px; font-size: 15px; outline: none; transition: 0.2s;
-            background: #fafafa;
+            background: #f9f9f9; color: #333;
         }
         .login-input:focus {
-            border-color: var(--color-purple); background: #fff;
+            border-color: var(--color-purple);
+            background: #fff;
             box-shadow: 0 0 0 3px rgba(85, 29, 131, 0.1);
         }
+        .login-input::placeholder { color: #ccc; }
 
+        /* [수정] 버튼 그라디언트: 로고와 동일하게 좌우 반전 */
         .login-btn {
-            width: 100%; padding: 16px; margin-top: 20px;
-            background: var(--color-purple); color: #fff; border: none;
+            width: 100%; padding: 16px; margin-top: 24px;
+            
+            /* 좌우 반전된 그라디언트 */
+            background: linear-gradient(
+                90deg, 
+                var(--color-magenta) 0%, 
+                var(--color-purple) 50%, 
+                var(--color-lightblue) 100% 
+            );
+            
+            color: #fff; border: none;
             border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer;
             transition: 0.2s;
+            /* 그림자는 보라색 계열로 은은하게 */
+            box-shadow: 0 4px 15px rgba(85, 29, 131, 0.25);
         }
-        .login-btn:hover { background: #4a1575; transform: translateY(-1px); }
-        .login-footer { margin-top: 24px; font-size: 12px; color: #aaa; }
+        .login-btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(85, 29, 131, 0.35); 
+            opacity: 0.95;
+        }
+        
+        .login-footer { margin-top: 32px; font-size: 12px; color: #aaa; }
 
 
         /* ================= 메인 앱 (초기 숨김) ================= */
@@ -87,9 +122,15 @@
             width: 100%;
         }
 
-        /* 1. 헤더 */
+        /* 1. 헤더 (헤더도 동일하게 좌우 반전) */
         header {
-            background: linear-gradient(90deg, var(--color-purple) 0%, var(--color-magenta) 100%);
+            /* 헤더 그라디언트 좌우 반전 */
+            background: linear-gradient(
+                90deg, 
+                var(--color-magenta) 0%, 
+                var(--color-purple) 50%, 
+                var(--color-lightblue) 100%
+            );
             color: #fff;
             padding: 0 32px;
             height: var(--header-height);
@@ -349,10 +390,12 @@
 </head>
 <body>
 
-    <!-- [1] 로그인 페이지 (초기 표시) -->
+    <!-- [1] 로그인 페이지 -->
     <div id="login-page">
         <div class="login-card">
+            <!-- [수정] 로고에 3축 그라디언트 텍스트 적용 (좌우 반전) -->
             <div class="login-logo">CHEMILEADER</div>
+            
             <div class="input-group">
                 <label class="input-label">아이디</label>
                 <input type="text" id="login-id" class="login-input" placeholder="ID를 입력하세요">
@@ -361,29 +404,29 @@
                 <label class="input-label">비밀번호</label>
                 <input type="password" id="login-pw" class="login-input" placeholder="비밀번호를 입력하세요">
             </div>
+            
+            <!-- [수정] 버튼에 3축 그라디언트 배경 적용 (좌우 반전) -->
             <button class="login-btn" onclick="checkLogin()">로그인</button>
-            <div class="login-footer">Copyright © LG Chem. All Rights Reserved.</div>
+            
+            <div class="login-footer">Copyright © HEROS_B. All Rights Reserved.</div>
         </div>
     </div>
 
-    <!-- [2] 메인 앱 (초기 숨김) -->
+    <!-- [2] 메인 앱 -->
     <div id="main-app">
+        <!-- [수정] 헤더에도 동일한 3축 그라디언트 적용 (좌우 반전) -->
         <header>
-            <a onclick="resetView()" class="logo-area">
-                CHEMILEADER
-            </a>
+            <a onclick="resetView()" class="logo-area">CHEMILEADER</a>
             <input type="text" id="member-search" class="search-box" placeholder="팀원, 부서 검색">
         </header>
 
         <div class="app-container">
-            
             <aside class="sidebar">
                 <div class="sidebar-header">My Team (5)</div>
                 <div id="member-list" class="member-list"></div>
             </aside>
 
             <div class="content-wrapper">
-                
                 <div id="empty-state" class="empty-state">
                     <div class="empty-content">
                         <div class="empty-icon">👥</div>
@@ -407,7 +450,6 @@
                 </div>
 
                 <div id="main-content" class="main-content">
-                    
                     <nav class="nav-tabs-container">
                         <ul class="nav-tabs">
                             <li class="tab-item active" id="tab-item-basic" onclick="switchTab('basic', this)"><a class="tab-link">기본정보</a></li>
