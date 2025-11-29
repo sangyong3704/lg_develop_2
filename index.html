@@ -270,7 +270,7 @@
 
         /* Final Preview */
         .final-box { background: #fff; border: 1px solid var(--color-purple); border-radius: 12px; padding: 24px; min-height: 150px; }
-        .final-text { width: 100%; border: none; outline: none; font-size: 15px; line-height: 1.8; color: #333; resize: none; height: 160px; font-family: 'Noto Sans KR', sans-serif; }
+        .final-text { width: 100%; border: none; outline: none; font-size: 15px; line-height: 1.8; color: #333; resize: none; height: 200px; font-family: 'Noto Sans KR', sans-serif; }
         .action-row { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
 
         /* 탭 전환 */
@@ -285,7 +285,7 @@
     <!-- 1. 헤더 -->
     <header>
         <a onclick="resetView()" class="logo-area">LG Chem</a>
-        <input type="text" id="member-search" class="search-box" placeholder="이름, 부서 검색">
+        <input type="text" id="member-search" class="search-box" placeholder="팀원, 부서 검색">
     </header>
 
     <div class="app-container">
@@ -328,7 +328,7 @@
                 <!-- 탭 네비게이션 -->
                 <nav class="nav-tabs-container">
                     <ul class="nav-tabs">
-                        <!-- [수정] 각 li에 고유 ID 부여 -->
+                        <!-- [수정] ID 부여: tab-item-basic -->
                         <li class="tab-item active" id="tab-item-basic" onclick="switchTab('basic', this)"><a class="tab-link">기본정보</a></li>
                         <li class="tab-item" id="tab-item-perf" onclick="switchTab('perf', this)"><a class="tab-link">성과 & 육성</a></li>
                         <li class="tab-item" id="tab-item-feedback" onclick="switchTab('feedback', this)"><a class="tab-link">전달</a></li>
@@ -503,7 +503,7 @@
                             <div class="evidence-grid">
                                 <!-- 강점 근거 -->
                                 <div class="evidence-box" id="box-str">
-                                    <div class="evidence-title">강점 근거 (성공 사례)</div>
+                                    <div class="evidence-title">강점 근거</div>
                                     <div class="evidence-content" id="evidence-str-text"></div>
                                     <div class="evidence-controls">
                                         <button class="btn-xs" onclick="regenerateEvidence('str')">🔄 재생성</button>
@@ -512,7 +512,7 @@
                                 </div>
                                 <!-- 보완점 근거 -->
                                 <div class="evidence-box" id="box-imp">
-                                    <div class="evidence-title">보완점 근거 (아쉬운 사례)</div>
+                                    <div class="evidence-title">보완점 근거</div>
                                     <div class="evidence-content" id="evidence-imp-text"></div>
                                     <div class="evidence-controls">
                                         <button class="btn-xs" onclick="regenerateEvidence('imp')">🔄 재생성</button>
@@ -521,7 +521,7 @@
                                 </div>
                                 <!-- 성장 근거 -->
                                 <div class="evidence-box" id="box-gro">
-                                    <div class="evidence-title">성장 방향 제언</div>
+                                    <div class="evidence-title">성장 방향 근거</div>
                                     <div class="evidence-content" id="evidence-gro-text"></div>
                                     <div class="evidence-controls">
                                         <button class="btn-xs" onclick="regenerateEvidence('gro')">🔄 재생성</button>
@@ -775,10 +775,11 @@
             document.getElementById('dev-comp-goals').innerHTML = goalList(d.compGoals);
             document.getElementById('dev-biz-goals').innerHTML = goalList(d.bizGoals);
 
-            // 탭 초기화 (무조건 기본정보 탭으로)
+            // [수정] 탭 초기화 (무조건 기본정보 탭으로)
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.getElementById('tab-item-basic').classList.add('active'); // ID 수정됨
+            
+            document.getElementById('tab-item-basic').classList.add('active');
             document.getElementById('tab-basic').classList.add('active');
 
             resetFeedbackTab();
@@ -853,6 +854,7 @@
             if (matchedCategory) {
                 const pool = feedbackDictionary[matchedCategory][type];
                 if (pool && pool.length > 0) {
+                    // 랜덤 선택
                     const randomIndex = Math.floor(Math.random() * pool.length);
                     return pool[randomIndex];
                 }
@@ -872,7 +874,9 @@
                 }
             }
 
-            return "AI 근거 데이터를 불러오지 못했습니다.";
+            // 3) 최후 Fallback
+            if (type === 'str') return `상위 5%에 해당하는 '${member.coreValues[0].name}' 점수(${member.coreValues[0].score}점)가 이를 뒷받침합니다.`;
+            return `핵심가치 중 '${member.coreValues[4].name}' 점수가 다소 낮아 보완이 필요해 보입니다.`;
         }
 
         function initAiEvidenceSection() {
@@ -944,49 +948,51 @@
 
             let sentences = [];
             const isLogical = toneProfile.style === 'logical';
-            const isSoft = toneProfile.style === 'soft';
-
-            // [Helper] 어조 변환기
-            const toSoft = (text) => text.replace(/합니다/g, '해요').replace(/했습니다/g, '했어요').replace(/입니다/g, '이에요').replace(/생각합니다/g, '생각해요').replace(/아쉽습니다/g, '조금 아쉬웠어요');
+            
+            // [어조 변환 함수]
+            const modifyEnding = (text, mode) => {
+                if(!text) return "";
+                if(mode === 'soft') {
+                    return text.replace(/합니다/g, '해요').replace(/했습니다/g, '했어요').replace(/입니다/g, '이에요').replace(/생각합니다/g, '생각해요').replace(/아쉽습니다/g, '조금 아쉬웠어요');
+                }
+                return text; // Logical은 그대로 (합니다체)
+            };
 
             // 1. 오프닝
-            if (isLogical) {
-                sentences.push(`금년도 성과 평가 결과를 바탕으로 종합 피드백을 전달합니다.`);
-            } else {
-                sentences.push(`올 한 해 동안 팀을 위해 헌신해 주셔서 진심으로 고마워요.`);
-            }
+            if (isLogical) sentences.push(`금년도 성과에 대한 종합 피드백을 전달합니다.`);
+            else sentences.push(`올 한 해 동안 팀을 위해 정말 많이 애써주셔서 고마워요.`);
 
-            // 2. 강점 파트 (입력 + 근거)
-            let strBlock = "";
-            if (isLogical) strBlock = `우선, ${strInput} 점은 매우 긍정적으로 평가됩니다.`;
-            else strBlock = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
-            
-            if (selectedEvidence.str) {
-                strBlock += isSoft ? ` ${toSoft(selectedEvidence.str)}` : ` ${selectedEvidence.str}`;
+            // 2. 강점 파트
+            if (strInput) {
+                let s = "";
+                if (isLogical) s = `우선, ${strInput} 점은 매우 긍정적으로 평가됩니다.`;
+                else s = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
+                
+                if (selectedEvidence.str) s += ` ${modifyEnding(selectedEvidence.str, isLogical?'logical':'soft')}`;
+                sentences.push(s);
             }
-            sentences.push(strBlock);
 
             // 3. 보완 파트
-            let impBlock = "";
-            if (isLogical) impBlock = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
-            else impBlock = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
-            
-            if (selectedEvidence.imp) {
-                impBlock += isSoft ? ` ${toSoft(selectedEvidence.imp)}` : ` ${selectedEvidence.imp}`;
+            if (impInput) {
+                let i = "";
+                if (isLogical) i = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
+                else i = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
+                
+                if (selectedEvidence.imp) i += ` ${modifyEnding(selectedEvidence.imp, isLogical?'logical':'soft')}`;
+                sentences.push(i);
             }
-            sentences.push(impBlock);
 
             // 4. 성장 파트
-            let groBlock = "";
-            if (isLogical) groBlock = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
-            else groBlock = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
-            
-            if (selectedEvidence.gro) {
-                groBlock += isSoft ? ` ${toSoft(selectedEvidence.gro)}` : ` ${selectedEvidence.gro}`;
+            if (groInput) {
+                let g = "";
+                if (isLogical) g = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
+                else g = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
+                
+                if (selectedEvidence.gro) g += ` ${modifyEnding(selectedEvidence.gro, isLogical?'logical':'soft')}`;
+                sentences.push(g);
             }
-            sentences.push(groBlock);
 
-            // 5. 클로징 (과업 vs 관계)
+            // 5. 클로징
             if (toneProfile.focus === 'task') {
                 if(isLogical) sentences.push(`위 내용에 대한 구체적인 실행 계획(Action Plan)을 수립하여 차주 미팅 시 논의합시다.`);
                 else sentences.push(`어떻게 하면 목표를 더 잘 달성할 수 있을지, 구체적인 방법을 같이 고민해봐요.`);
@@ -1001,3 +1007,5 @@
     </script>
 </body>
 </html>
+
+혹시 더 수정하거나 개선해야할 점 있을까?
