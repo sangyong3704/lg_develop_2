@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>팀원 관리 시스템</title>
-
-    <!-- 폰트 -->
+    
+    <!-- 폰트: Noto Sans KR -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* ============================
-           DESIGN SYSTEM
-        ============================ */
+        /* [디자인 시스템] */
         :root {
             --color-magenta: #D7177B;
             --color-purple: #551D83;
@@ -34,317 +32,330 @@
             overflow: hidden;
         }
 
-        /* ============================
-           HEADER
-        ============================ */
+        /* 1. 헤더 */
         header {
-            background: linear-gradient(90deg, var(--color-purple), var(--color-magenta));
+            background: linear-gradient(90deg, var(--color-purple) 0%, var(--color-magenta) 100%);
             color: #fff;
             padding: 0 32px;
             height: var(--header-height);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between;
             flex-shrink: 0;
+            z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* [수정] 접근성 위해 href 추가 */
-        <a href="#" onclick="resetView(); return false;" class="logo-area">
-            LG Chem
-        </a>
-
+        .logo-area { text-decoration: none; color: #fff; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; cursor: pointer; }
+        
         .search-box {
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 20px;
-            padding: 8px 20px;
-            width: 280px;
-            color: #fff;
-            font-size: 14px;
-            outline: none;
+            background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
+            border-radius: 20px; padding: 8px 20px; color: #fff; outline: none; width: 280px; font-size: 14px;
         }
+        .search-box:focus { background: rgba(255,255,255,0.35); }
+        .search-box::placeholder { color: rgba(255,255,255,0.8); }
 
-        /* ============================
-           LAYOUT
-        ============================ */
+        /* 2. 메인 컨테이너 */
         .app-container {
-            display: flex;
-            flex: 1;
-            height: calc(100vh - var(--header-height));
+            display: flex; flex: 1; height: calc(100vh - var(--header-height));
         }
 
-        /* ----------------------------
-           SIDEBAR
-        ---------------------------- */
+        /* 3. 사이드바 */
         .sidebar {
-            width: var(--sidebar-width);
-            background: #fff;
-            border-right: 1px solid #e0e0e0;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
+            width: var(--sidebar-width); background: #fff; border-right: 1px solid #e0e0e0;
+            display: flex; flex-direction: column; overflow-y: auto;
         }
-
-        /* [추가] 팀원 수 동적 표시 */
-        .sidebar-header {
-            padding: 24px 20px 10px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #888;
-            text-transform: uppercase;
-        }
-
+        .sidebar-header { padding: 24px 20px 10px; font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; }
         .member-item {
-            display: flex; 
-            align-items: center;
-            gap: 12px;
-            padding: 14px 24px;
-            cursor: pointer;
-            transition: 0.2s;
+            display: flex; align-items: center; gap: 12px; padding: 14px 24px; cursor: pointer; transition: all 0.2s;
             border-left: 4px solid transparent;
         }
-
-        .member-item.active {
-            background: #f3eef9;
-            border-left-color: var(--color-purple);
+        .member-item:hover { background: #f9f9f9; }
+        .member-item.active { background: #f4eff9; border-left-color: var(--color-purple); }
+        .m-avatar { 
+            width: 36px; height: 36px; border-radius: 50%; background: #eee; 
+            display: flex; align-items: center; justify-content: center; font-size: 18px; 
+            border: 1px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
+        .m-info { display: flex; flex-direction: column; line-height: 1.3; }
+        .m-name { font-size: 14px; font-weight: 700; color: #333; }
+        .m-job { font-size: 12px; color: #888; }
+        .member-item.active .m-name { color: var(--color-purple); }
 
-        .m-avatar {
-            width: 36px; height: 36px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            background: #eee;
-            border: 1px solid #fff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        /* ----------------------------
-           CONTENT WRAPPER
-        ---------------------------- */
+        /* 4. 컨텐츠 영역 */
         .content-wrapper {
-            flex: 1;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            flex: 1; position: relative; background-color: var(--color-bg-gray);
+            overflow: hidden; display: flex; flex-direction: column;
         }
 
-        /* ============================
-           EMPTY STATE
-        ============================ */
+        /* 초기화면 (Empty State) */
         .empty-state {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #999; z-index: 10; background: var(--color-bg-gray);
         }
-
         .empty-content {
-            background: #fff;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
+            background: #fff; padding: 40px; border-radius: 20px; text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05); max-width: 500px; width: 90%;
         }
+        .empty-icon { font-size: 60px; margin-bottom: 20px; opacity: 0.8; }
+        .empty-title { font-size: 22px; font-weight: 700; color: var(--color-purple); margin-bottom: 12px; }
+        .empty-desc { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 24px; word-break: keep-all; }
+        .feature-list { text-align: left; font-size: 13px; color: #555; background: #f9f9f9; padding: 20px; border-radius: 12px; }
+        .feature-list li { margin-bottom: 8px; list-style: none; position: relative; padding-left: 14px; }
+        .feature-list li::before { content: '•'; position: absolute; left: 0; color: var(--color-teal); }
 
-        /* ============================
-           MAIN CONTENT TAB
-        ============================ */
-        .main-content { display: none; flex-direction: column; }
+        /* 메인 컨텐츠 */
+        .main-content {
+            display: none; flex-direction: column; height: 100%; overflow-y: auto;
+        }
         .main-content.active { display: flex; }
 
+        /* 탭 네비게이션 */
         .nav-tabs-container {
-            background: #fff; padding: 0 40px;
-            border-bottom: 1px solid #eee;
-            position: sticky; top: 0;
+            background: #fff; padding: 0 40px; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 20;
         }
-
         .nav-tabs { display: flex; justify-content: center; gap: 60px; list-style: none; }
-        .tab-item.active .tab-link { 
-            border-bottom: 3px solid var(--color-purple); 
-            font-weight: 700; color: var(--color-purple);
+        .tab-link {
+            display: block; padding: 16px 10px; color: #999;
+            text-decoration: none; font-size: 16px; font-weight: 500; cursor: pointer;
         }
+        .tab-item.active .tab-link { color: var(--color-purple); font-weight: 700; border-bottom: 3px solid var(--color-purple); }
 
-        .tab-content-area {
-            padding: 40px;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .tab-content-area { padding: 40px; max-width: 1200px; width: 100%; margin: 0 auto; }
 
-        /* ============================
-           COMMON COMPONENTS
-        ============================ */
+        /* 카드 스타일 */
         .card {
-            background: #fff;
-            border-radius: 16px;
-            padding: 28px;
-            border: 1px solid #eee;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            background: #fff; border-radius: 16px; padding: 28px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #eee;
+            height: 100%; display: flex; flex-direction: column;
+        }
+        .card-head { 
+            font-size: 17px; font-weight: 700; color: #333; margin-bottom: 20px; 
+            padding-bottom: 12px; border-bottom: 1px solid #f5f5f5; 
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .grid-dashboard {
-            display: grid;
-            grid-template-columns: 300px 1fr 1fr;
-            gap: 24px;
+        /* 그리드 */
+        .grid-dashboard { display: grid; grid-template-columns: 300px 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+        /* [TAB 1] 기본정보 스타일 */
+        .profile-summary { text-align: center; margin-bottom: 20px; }
+        .profile-img-lg {
+            width: 100px; height: 100px; background: linear-gradient(135deg, #e0e0e0, #bdbdbd);
+            border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center;
+            font-size: 40px; border: 4px solid #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .profile-name-lg { font-size: 24px; font-weight: 700; color: #333; margin-bottom: 6px; }
+        .profile-job-lg { font-size: 15px; color: #666; font-weight: 500; margin-bottom: 16px; }
+        .keyword-box { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 24px; }
+        .keyword { padding: 4px 10px; border-radius: 12px; font-size: 12px; background: #f0f4f8; color: #555; }
+        .info-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f9f9f9; font-size: 14px; }
+        .info-label { color: #888; } .info-value { font-weight: 600; color: #333; }
+
+        .skill-row { margin-bottom: 12px; font-size: 14px; }
+        .skill-meta { display: flex; justify-content: space-between; margin-bottom: 6px; font-weight: 500; }
+        .progress-track { width: 100%; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+
+        .swot-item { font-size: 12px; padding: 8px; border-radius: 6px; background: #fcfcfc; border: 1px solid #eee; margin-bottom: 6px;}
+        .timeline { position: relative; padding-left: 16px; }
+        .timeline::before { content: ''; position: absolute; left: 5px; top: 6px; bottom: 0; width: 2px; background: #eee; }
+        .timeline-item { position: relative; padding-bottom: 20px; padding-left: 16px; }
+        .timeline-dot { position: absolute; left: -16px; top: 0; width: 10px; height: 10px; background: #fff; border: 3px solid var(--color-purple); border-radius: 50%; z-index: 1; }
+        .timeline-date { font-size: 12px; font-weight: 700; color: var(--color-purple); }
+        .timeline-content { font-size: 13px; font-weight: 500; margin-top: 2px; }
+        
+        /* [TAB 2] 성과 & 육성 */
+        .eval-summary-card {
+            background: linear-gradient(135deg, #333 0%, #444 100%);
+            color: #fff; border-radius: 16px; padding: 24px 32px;
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+        .eval-info { display: flex; gap: 40px; align-items: center; }
+        .eval-item { display: flex; flex-direction: column; min-width: 100px; }
+        .eval-label { font-size: 12px; opacity: 0.7; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .eval-value { font-size: 28px; font-weight: 700; }
+        .eval-sub { font-size: 13px; color: var(--color-teal); font-weight: 500; }
+        .eval-sub.kpi { color: var(--color-magenta); }
+        .eval-grade { font-size: 42px; font-weight: 900; color: #fff; line-height: 1; text-shadow: 0 0 10px rgba(215, 23, 123, 0.5); }
+
+        .cv-item { margin-bottom: 14px; font-size: 13px; }
+        .cv-header { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .cv-name { font-weight: 500; }
+        .cv-val { font-weight: 700; color: var(--color-teal); }
+        .cv-bar-bg { width: 100%; height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+        .cv-bar-fill { height: 100%; background: var(--color-teal); border-radius: 3px; }
+
+        .kpi-wrapper { display: flex; align-items: center; justify-content: center; gap: 30px; height: 100%; }
+        .donut-chart { position: relative; width: 120px; height: 120px; }
+        .donut-bg { fill: none; stroke: #f0f0f0; stroke-width: 12; }
+        .donut-fg { 
+            fill: none; stroke: var(--color-purple); stroke-width: 12; stroke-linecap: round;
+            stroke-dasharray: 377; stroke-dashoffset: 377; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 1s ease-out;
+        }
+        .donut-val { font-size: 24px; font-weight: 700; color: var(--color-purple); position: absolute; top:50%; left:50%; transform:translate(-50%, -50%); }
+        .kpi-desc { font-size: 13px; color: #666; line-height: 1.6; flex: 1; }
+
+        .section-title { font-size: 18px; font-weight: 700; color: #333; margin: 40px 0 20px; display: flex; align-items: center; gap: 8px;}
+        .section-badge { background: var(--color-teal); color: #fff; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .c-node { text-align: center; }
+        .c-role { font-size: 15px; font-weight: 700; color: #333; }
+        .c-node.future .c-role { color: var(--color-purple); }
+
+        .goal-li { position: relative; padding-left: 14px; font-size: 13px; color: #555; margin-bottom: 6px; }
+        .goal-li::before { content: '•'; position: absolute; left: 0; color: #ccc; }
+
+        /* [TAB 3] 전달 (NEW CSS) */
+        .fb-section { margin-bottom: 32px; animation: fadeIn 0.3s; }
+        .fb-label { display: block; font-size: 14px; font-weight: 700; color: #444; margin-bottom: 8px; }
+        .fb-desc { font-size: 12px; color: #888; margin-bottom: 12px; }
+        
+        .fb-input-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
+        .fb-input-card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 16px; }
+        .fb-input-head { font-size: 14px; font-weight: 700; color: var(--color-purple); margin-bottom: 10px; }
+        .fb-textarea { width: 100%; height: 100px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; font-size: 13px; resize: none; outline: none; transition: 0.2s; }
+        .fb-textarea:focus { border-color: var(--color-purple); background: #fdfaff; }
+
+        .btn-primary { 
+            background: var(--color-purple); color: #fff; border: none; padding: 12px 24px; 
+            border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; transition: 0.2s; 
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .btn-primary:hover { background: #4a1575; }
+        .btn-secondary {
+            background: #fff; color: #555; border: 1px solid #ddd; padding: 8px 16px;
+            border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer;
+        }
+        .btn-secondary:hover { background: #f5f5f5; }
+
+        /* 비활성화 상태 스타일 */
+        .disabled-area { opacity: 0.5; pointer-events: none; filter: grayscale(100%); transition: all 0.3s; }
+
+        /* Evidence Section */
+        .evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        .evidence-box { 
+            background: #fbfbfb; border: 1px solid #eee; border-radius: 12px; padding: 16px; 
+            position: relative; transition: all 0.2s;
+        }
+        .evidence-box.selected {
+            background: #f4eff9; border-color: var(--color-purple); box-shadow: 0 4px 10px rgba(85,29,131,0.1);
+        }
+        .evidence-box.selected::after {
+            content: '✔ 선택됨'; position: absolute; top: -10px; right: 10px; 
+            background: var(--color-purple); color: #fff; font-size: 11px; padding: 2px 8px; border-radius: 12px;
         }
 
-        .grid-2-col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
+        .evidence-title { font-size: 13px; font-weight: 700; color: #555; margin-bottom: 10px; }
+        .evidence-content { font-size: 13px; color: #333; line-height: 1.6; min-height: 60px; word-break: keep-all; }
+        .evidence-controls { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; border-top: 1px dashed #eee; padding-top: 8px; }
+        .btn-xs { 
+            padding: 4px 8px; font-size: 11px; border-radius: 4px; border: 1px solid #ddd; 
+            background: #fff; cursor: pointer; color: #666; transition: 0.2s;
         }
+        .btn-xs:hover { background: #eee; }
+        .btn-select { background: var(--color-bg-gray); color: var(--color-purple); border-color: var(--color-purple); font-weight: 700; }
+        .evidence-box.selected .btn-select { background: var(--color-purple); color: #fff; }
 
-        /* ============================
-           [추가 CSS] SWOT / Career Flow
-        ============================ */
-        .swot-row { display: flex; gap: 16px; }
-        .swot-col { flex: 1; }
-        .swot-head { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+        /* Tone Section */
+        .tone-container { display: flex; gap: 24px; padding: 20px; background: #fff; border: 1px solid #eee; border-radius: 12px; align-items: center; justify-content: space-between; }
+        .tone-group { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+        .tone-label { font-size: 13px; font-weight: 700; color: #444; }
+        .tone-options { display: flex; background: #f5f5f5; padding: 4px; border-radius: 8px; }
+        .tone-option { 
+            flex: 1; text-align: center; font-size: 12px; padding: 8px 0; cursor: pointer; 
+            border-radius: 6px; color: #888; font-weight: 500; transition: 0.2s; 
+        }
+        .tone-option.selected { background: #fff; color: var(--color-purple); box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-weight: 700; }
 
-        .career-flow {
-            display: flex; align-items: center; justify-content: center;
-            gap: 20px; text-align: center; padding: 12px 0;
-        }
-        .c-tag {
-            font-size: 11px;
-            padding: 2px 8px;
-            border-radius: 999px;
-            background: #f5f5f5;
-            color: #777;
-            margin-bottom: 4px;
-        }
-        .c-arrow { font-size: 24px; color: #ccc; }
-                /* ============================
-           FEEDBACK SECTION + TONE
-        ============================ */
-        .fb-label { font-weight: 700; margin-bottom: 6px; color: #444; }
-        .fb-desc { color: #888; margin-bottom: 12px; font-size: 12px; }
+        /* Final Preview */
+        .final-box { background: #fff; border: 1px solid var(--color-purple); border-radius: 12px; padding: 24px; min-height: 150px; }
+        .final-text { width: 100%; border: none; outline: none; font-size: 15px; line-height: 1.8; color: #333; resize: none; height: 200px; font-family: 'Noto Sans KR', sans-serif; }
+        .action-row { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
 
-        .fb-input-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 16px; margin-bottom: 16px;
-        }
-
-        .fb-textarea {
-            width: 100%; height: 100px; font-size: 13px;
-            border: 1px solid #ccc; border-radius: 8px;
-            padding: 10px; resize: none;
-        }
-
-        .tone-container {
-            display: flex;
-            gap: 24px;
-            padding: 20px;
-            background: #fff;
-            border: 1px solid #eee;
-            border-radius: 12px;
-        }
-
-        .tone-option.selected {
-            background: #fff;
-            color: var(--color-purple);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .disabled-area {
-            opacity: 0.5;
-            pointer-events: none;
-        }
+        /* 탭 전환 */
+        .tab-content { display: none; animation: fadeIn 0.3s ease-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
 </head>
-
 <body>
 
-    <!-- ============================
-         HEADER
-    ============================ -->
+    <!-- 1. 헤더 -->
     <header>
-        <!-- [수정] 접근성을 위한 href 적용 -->
-        <a href="#" onclick="resetView(); return false;" class="logo-area">LG Chem</a>
+        <a onclick="resetView()" class="logo-area">LG Chem</a>
         <input type="text" id="member-search" class="search-box" placeholder="팀원, 부서 검색">
     </header>
 
     <div class="app-container">
-
-        <!-- ============================
-             SIDEBAR
-        ============================ -->
+        
+        <!-- 2. 사이드바 -->
         <aside class="sidebar">
-            <div class="sidebar-header">
-                My Team (<span id="team-count"></span>)  <!-- [추가] 팀원수 동적 출력 -->
-            </div>
-            <div id="member-list"></div>
+            <div class="sidebar-header">My Team (5)</div>
+            <div id="member-list" class="member-list"></div>
         </aside>
 
-        <!-- ============================
-             CONTENT WRAPPER
-        ============================ -->
+        <!-- 3. 컨텐츠 영역 -->
         <div class="content-wrapper">
-
-            <!-- EMPTY STATE -->
+            
+            <!-- [초기 상태] Empty State -->
             <div id="empty-state" class="empty-state">
                 <div class="empty-content">
-                    <div class="empty-icon" style="font-size:60px;">👥</div>
-                    <div class="empty-title" style="font-size:20px; font-weight:700; color:var(--color-purple); margin-bottom:12px;">
-                        AI 기반 통합 인사이트 프로필
-                    </div>
-                    <p class="empty-desc" style="font-size:14px; color:#666;">
-                        리더가 팀원의 데이터를 한눈에 정리하고 <br>
-                        공정하고 설득력 있는 피드백을 준비하도록 설계된 도구입니다.
+                    <div class="empty-icon">👥</div>
+                    <div class="empty-title">AI 기반 통합 인사이트 프로필</div>
+                    <p class="empty-desc">
+                        이 도구는 리더가 팀원의 데이터를 한눈에 정리하고,<br>
+                        더 공정하고 설득력 있는 피드백을 준비할 수 있도록 설계되었습니다.
                     </p>
+                    <div class="feature-list">
+                        <strong>이 도구로 할 수 있는 일</strong>
+                        <ul>
+                            <li>평가·성과·경력 정보를 한 화면에서 통합 확인</li>
+                            <li>등급 산출의 논리(80:20)를 설명할 수 있는 핵심 근거 정리</li>
+                            <li>강점·보완점·커리어 목표를 바탕으로 성장 관점 피드백 설계</li>
+                        </ul>
+                    </div>
+                    <div style="margin-top:20px; font-size:12px; color:#999;">
+                        👈 왼쪽 목록에서 팀원을 선택하여 시작하세요.
+                    </div>
                 </div>
             </div>
 
-            <!-- MAIN CONTENT -->
+            <!-- [메인 상태] 상세 정보 -->
             <div id="main-content" class="main-content">
+                
+                <!-- 탭 네비게이션 -->
                 <nav class="nav-tabs-container">
                     <ul class="nav-tabs">
-                        <li class="tab-item active" id="tab-item-basic" onclick="switchTab('basic', this)">
-                            <a class="tab-link">기본정보</a>
-                        </li>
-                        <li class="tab-item" id="tab-item-perf" onclick="switchTab('perf', this)">
-                            <a class="tab-link">성과 & 육성</a>
-                        </li>
-                        <li class="tab-item" id="tab-item-feedback" onclick="switchTab('feedback', this)">
-                            <a class="tab-link">전달</a>
-                        </li>
+                        <!-- [수정] ID 부여: tab-item-basic -->
+                        <li class="tab-item active" id="tab-item-basic" onclick="switchTab('basic', this)"><a class="tab-link">기본정보</a></li>
+                        <li class="tab-item" id="tab-item-perf" onclick="switchTab('perf', this)"><a class="tab-link">성과 & 육성</a></li>
+                        <li class="tab-item" id="tab-item-feedback" onclick="switchTab('feedback', this)"><a class="tab-link">전달</a></li>
                     </ul>
                 </nav>
 
                 <div class="tab-content-area">
-
-                    <!-- =====================================
-                         TAB 1 — 기본정보
-                    ===================================== -->
+                    
+                    <!-- [TAB 1] 기본정보 -->
                     <div id="tab-basic" class="tab-content active">
-
                         <div class="grid-dashboard">
-                            <!-- 프로필 카드 -->
+                            <!-- 프로필 -->
                             <div class="card profile-card" style="grid-row: span 2;">
                                 <div class="card-head">프로필 요약</div>
-                                <div class="profile-summary" style="text-align:center; margin-bottom:20px;">
-                                    <div class="profile-img-lg" id="p-avatar"
-                                        style="width:100px;height:100px;border-radius:50%;font-size:40px;background:#eee;display:flex;justify-content:center;align-items:center;margin:0 auto 20px;">
-                                    </div>
-                                    <div class="profile-name-lg" id="p-name" style="font-size:20px;font-weight:700;"></div>
-                                    <div class="profile-job-lg" id="p-job" style="font-size:14px;color:#666;"></div>
-                                    <div class="keyword-box" id="p-keywords" style="margin-top:10px;"></div>
+                                <div class="profile-summary">
+                                    <div class="profile-img-lg" id="p-avatar"></div>
+                                    <div class="profile-name-lg" id="p-name"></div>
+                                    <div class="profile-job-lg" id="p-job"></div>
+                                    <div class="keyword-box" id="p-keywords"></div>
                                 </div>
-
                                 <div id="p-info-list"></div>
                             </div>
-
-                            <!-- 전문역량 -->
+                            <!-- 역량 -->
                             <div class="card">
                                 <div class="card-head">전문 역량</div>
                                 <div id="p-skills"></div>
                             </div>
-
                             <!-- SWOT -->
                             <div class="card">
                                 <div class="card-head">강점 & 보완점</div>
@@ -359,124 +370,90 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- 성장 곡선 -->
+                            <!-- 성장 -->
                             <div class="card">
                                 <div class="card-head">성장 곡선</div>
-                                <svg width="220" height="120">
-                                    <path id="growth-path" d="" stroke="var(--color-purple)" stroke-width="3" fill="none"/>
-                                    <g id="growth-points"></g>
-                                </svg>
-                                <p id="growth-desc" style="font-size:12px;color:#888;text-align:center;margin-top:10px;"></p>
+                                <div style="height:120px; display:flex; align-items:center; justify-content:center;">
+                                    <svg width="200" height="100" viewBox="0 0 200 100">
+                                        <path id="growth-path" d="" fill="none" stroke="var(--color-purple)" stroke-width="3" stroke-linecap="round"/>
+                                        <g id="growth-points"></g>
+                                    </svg>
+                                </div>
+                                <p id="growth-desc" style="text-align:center; font-size:12px; color:#888; margin-top:10px;"></p>
                             </div>
-
-                            <!-- 이력 Timeline -->
+                            <!-- 이력 -->
                             <div class="card">
                                 <div class="card-head">Career History</div>
                                 <div class="timeline" id="p-history"></div>
                             </div>
+                        </div>
+                    </div>
 
-                        </div><!-- grid-dashboard END -->
-
-                    </div><!-- TAB 1 END -->                    <!-- =====================================
-                         TAB 2 — 성과 & 육성
-                    ===================================== -->
+                    <!-- [TAB 2] 성과 & 육성 -->
                     <div id="tab-perf" class="tab-content">
-
-                        <div class="eval-summary-card" style="
-                            background:linear-gradient(135deg,#333,#444);
-                            color:white;border-radius:16px;padding:24px 32px;
-                            display:flex;justify-content:space-between;align-items:center;
-                        ">
-                            <div style="font-size:18px;font-weight:700;">2023 종합 성과 리포트</div>
-
-                            <div class="eval-info" style="display:flex;gap:40px;align-items:center;">
+                        <!-- 종합 평가 -->
+                        <div class="eval-summary-card">
+                            <div style="font-size:18px; font-weight:700;">2023 종합 성과 리포트</div>
+                            <div class="eval-info">
                                 <div class="eval-item">
-                                    <div class="eval-label" style="font-size:12px;opacity:.7;">업무달성도 (80%)</div>
-                                    <div class="eval-value" id="sum-kpi" style="font-size:28px;font-weight:700;">0</div>
-                                    <div class="eval-sub" id="calc-kpi" style="font-size:12px;">00</div>
+                                    <span class="eval-label">업무달성도 (80%)</span>
+                                    <span class="eval-value" id="sum-kpi">0점</span>
+                                    <span class="eval-sub kpi" id="calc-kpi">00</span>
                                 </div>
-
-                                <div style="font-size:24px;opacity:.3;">+</div>
-
+                                <div style="font-size:24px; opacity:0.3; padding-top:10px;">+</div>
                                 <div class="eval-item">
-                                    <div class="eval-label" style="font-size:12px;opacity:.7;">핵심가치 (20%)</div>
-                                    <div class="eval-value" id="sum-cv" style="font-size:28px;font-weight:700;">0</div>
-                                    <div class="eval-sub" id="calc-cv" style="font-size:12px;">00</div>
+                                    <span class="eval-label">핵심가치 (20%)</span>
+                                    <span class="eval-value" id="sum-cv">0점</span>
+                                    <span class="eval-sub" id="calc-cv">00</span>
                                 </div>
-
-                                <div>
-                                    <div class="eval-label" style="font-size:12px;opacity:.7;">최종 등급</div>
-                                    <div class="eval-grade" id="final-grade" style="font-size:42px;font-weight:900;">S</div>
+                                <div class="eval-grade-box">
+                                    <div class="eval-label">최종 등급</div>
+                                    <div class="eval-grade" id="final-grade">S</div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- KPI / CV -->
-                        <div class="grid-2-col" style="margin-top:24px;">
-
-                            <!-- KPI -->
+                        <!-- KPI + 핵심가치 -->
+                        <div class="grid-2-col">
                             <div class="card">
                                 <div class="card-head">업무 달성도 (OKR/KPI)</div>
-                                <div class="kpi-wrapper" style="display:flex;gap:30px;">
-                                    <div class="donut-chart" style="position:relative;">
+                                <div class="kpi-wrapper">
+                                    <div class="donut-chart">
                                         <svg width="120" height="120">
-                                            <circle class="donut-bg" cx="60" cy="60" r="54" fill="none" stroke="#eee" stroke-width="12"/>
-                                            <circle class="donut-fg" id="kpi-donut"
-                                                cx="60" cy="60" r="54"
-                                                fill="none" stroke="var(--color-purple)" stroke-width="12"
-                                                stroke-linecap="round"
-                                                stroke-dasharray="377" stroke-dashoffset="377"
-                                                style="transform:rotate(-90deg);transform-origin:50% 50%;">
-                                            </circle>
+                                            <circle class="donut-bg" cx="60" cy="60" r="54"></circle>
+                                            <circle class="donut-fg" id="kpi-donut" cx="60" cy="60" r="54"></circle>
                                         </svg>
-                                        <div class="donut-val" id="kpi-total"
-                                            style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-                                            font-size:24px;font-weight:700;color:var(--color-purple);">
-                                        </div>
+                                        <div class="donut-val" id="kpi-total"></div>
                                     </div>
-
-                                    <div class="kpi-desc" style="font-size:13px;color:#666;">
-                                        <strong>주요 성과 요약</strong> <br>
-                                        <span id="kpi-desc-text" style="font-size:12px;color:#888;"></span>
+                                    <div class="kpi-desc">
+                                        <strong>주요 성과 요약</strong><br>
+                                        <span id="kpi-desc-text" style="font-size:12px; color:#888;"></span>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- 핵심가치 -->
                             <div class="card">
                                 <div class="card-head">
-                                    핵심가치 5대 항목
-                                    <span style="font-size:12px;color:#888;">
-                                        종합 <strong id="cv-total-score" style="color:var(--color-teal)">0</strong>/100
-                                    </span>
+                                    <span>핵심가치 5대 항목</span>
+                                    <span style="font-size:12px; font-weight:400; color:#888;">종합 <strong id="cv-total-score" style="color:var(--color-teal)">0</strong> / 100</span>
                                 </div>
-                                <div id="cv-list"></div>
+                                <div id="cv-list" style="display:flex; flex-direction:column; justify-content:center; height:100%;"></div>
                             </div>
-
-                        </div><!-- grid -->
-
-                        <!-- Career Path -->
-                        <div class="section-title" style="margin-top:40px;font-size:18px;font-weight:700;">
-                            <span class="section-badge" style="background:var(--color-teal);color:white;">Development</span>
-                            커리어 & 성장 목표
                         </div>
-
-                        <div class="card" style="margin-bottom:24px;">
+                        <!-- 육성 -->
+                        <div class="section-title" style="margin-top:40px;"><span class="section-badge">Development</span> 커리어 & 성장 목표</div>
+                        <div class="card" style="margin-bottom: 24px;">
                             <div class="card-head">Career Path</div>
                             <div class="career-flow">
                                 <div class="c-node">
                                     <span class="c-tag">Current</span>
-                                    <div class="c-role" id="dev-current" style="font-size:14px;font-weight:700;"></div>
+                                    <div class="c-role" id="dev-current"></div>
                                 </div>
                                 <div class="c-arrow">➜</div>
                                 <div class="c-node future">
-                                    <span class="c-tag">Goal</span>
-                                    <div class="c-role" id="dev-goal" style="font-size:14px;font-weight:700;color:var(--color-purple);"></div>
+                                    <span class="c-tag">Desired Goal</span>
+                                    <div class="c-role" id="dev-goal"></div>
                                 </div>
                             </div>
                         </div>
-
                         <div class="grid-2-col">
                             <div class="card">
                                 <div class="card-head">🚩 역량/경력 목표</div>
@@ -487,579 +464,546 @@
                                 <div id="dev-biz-goals"></div>
                             </div>
                         </div>
+                    </div>
 
-                    </div><!-- TAB 2 END -->
-
-                    <!-- =====================================
-                         TAB 3 — 피드백 전달
-                    ===================================== -->
+                    <!-- [TAB 3] 전달 (Feedback) -->
                     <div id="tab-feedback" class="tab-content">
-
-                        <!-- Step 1 -->
+                        
+                        <!-- A. 리더 입력 -->
                         <div class="fb-section">
-                            <div class="fb-label">1. 피드백 핵심 키워드 입력</div>
-                            <p class="fb-desc">전달하고 싶은 핵심 메시지를 각 항목별로 1문장씩 입력하세요.</p>
-
+                            <span class="fb-label">1. 피드백 핵심 키워드 입력</span>
+                            <p class="fb-desc">팀원에게 전달하고 싶은 핵심 메시지를 각 항목별로 1문장씩 작성해 주세요.</p>
+                            
                             <div class="fb-input-grid">
                                 <div class="fb-input-card">
-                                    <div class="fb-input-head" style="color:var(--color-magenta)">🔥 강점</div>
-                                    <textarea id="input-str" class="fb-textarea"></textarea>
+                                    <div class="fb-input-head" style="color:var(--color-magenta)">🔥 강점 (Strength)</div>
+                                    <textarea id="input-str" class="fb-textarea" placeholder="예: 분석적인 사고, 냉철한 판단"></textarea>
                                 </div>
                                 <div class="fb-input-card">
-                                    <div class="fb-input-head" style="color:var(--color-teal)">💡 보완점</div>
-                                    <textarea id="input-imp" class="fb-textarea"></textarea>
+                                    <div class="fb-input-head" style="color:var(--color-teal)">💡 보완점 (Improvement)</div>
+                                    <textarea id="input-imp" class="fb-textarea" placeholder="예: 소통 강화, 경청"></textarea>
                                 </div>
                                 <div class="fb-input-card">
-                                    <div class="fb-input-head" style="color:var(--color-purple)">🚀 성장</div>
-                                    <textarea id="input-gro" class="fb-textarea"></textarea>
+                                    <div class="fb-input-head" style="color:var(--color-purple)">🚀 성장/방향 (Growth)</div>
+                                    <textarea id="input-gro" class="fb-textarea" placeholder="예: 프로젝트 리더, 혁신 주도"></textarea>
                                 </div>
                             </div>
-
                             <div style="text-align:right;">
-                                <button class="btn-primary" onclick="initAiEvidenceSection()"
-                                    style="background:var(--color-purple);color:white;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;">
-                                    ✨ AI 근거 생성
+                                <button class="btn-primary" onclick="initAiEvidenceSection()">
+                                    <span>✨ AI 근거 생성</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Step 2 AI Evidence -->
+                        <!-- B. AI 근거 -->
                         <div id="section-evidence" class="fb-section" style="display:none;">
-                            <div class="fb-label">2. 데이터 기반 근거 선택</div>
-                            <p class="fb-desc">입력 키워드 + 팀원 데이터 기반으로 AI가 근거를 제안합니다.</p>
-
-                            <div class="evidence-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;">
-                                <!-- 강점 -->
+                            <span class="fb-label">2. 데이터 기반 근거 선택 (AI Suggestion)</span>
+                            <p class="fb-desc">입력하신 키워드와 팀원의 데이터를 바탕으로 AI가 구체적인 근거를 제안합니다. [선택]을 누르면 피드백에 반영됩니다.</p>
+                            
+                            <div class="evidence-grid">
+                                <!-- 강점 근거 -->
                                 <div class="evidence-box" id="box-str">
                                     <div class="evidence-title">강점 근거</div>
                                     <div class="evidence-content" id="evidence-str-text"></div>
-                                    <button id="btn-sel-str" onclick="toggleSelectEvidence('str')" class="btn-xs">선택</button>
+                                    <div class="evidence-controls">
+                                        <button class="btn-xs" onclick="regenerateEvidence('str')">🔄 재생성</button>
+                                        <button class="btn-xs btn-select" id="btn-sel-str" onclick="toggleSelectEvidence('str')">선택</button>
+                                    </div>
                                 </div>
-
-                                <!-- 보완점 -->
+                                <!-- 보완점 근거 -->
                                 <div class="evidence-box" id="box-imp">
                                     <div class="evidence-title">보완점 근거</div>
                                     <div class="evidence-content" id="evidence-imp-text"></div>
-                                    <button id="btn-sel-imp" onclick="toggleSelectEvidence('imp')" class="btn-xs">선택</button>
+                                    <div class="evidence-controls">
+                                        <button class="btn-xs" onclick="regenerateEvidence('imp')">🔄 재생성</button>
+                                        <button class="btn-xs btn-select" id="btn-sel-imp" onclick="toggleSelectEvidence('imp')">선택</button>
+                                    </div>
                                 </div>
-
-                                <!-- 성장 -->
+                                <!-- 성장 근거 -->
                                 <div class="evidence-box" id="box-gro">
-                                    <div class="evidence-title">성장 근거</div>
+                                    <div class="evidence-title">성장 방향 근거</div>
                                     <div class="evidence-content" id="evidence-gro-text"></div>
-                                    <button id="btn-sel-gro" onclick="toggleSelectEvidence('gro')" class="btn-xs">선택</button>
+                                    <div class="evidence-controls">
+                                        <button class="btn-xs" onclick="regenerateEvidence('gro')">🔄 재생성</button>
+                                        <button class="btn-xs btn-select" id="btn-sel-gro" onclick="toggleSelectEvidence('gro')">선택</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Step 3 Tone 설정 -->
+                        <!-- C. 톤앤매너 -->
                         <div id="section-tone" class="fb-section disabled-area">
-
-                            <div class="fb-label">3. 화법 / 관점 / 어조 선택</div>
-
+                            <span class="fb-label">3. 커뮤니케이션 스타일 설정</span>
+                            <p class="fb-desc">설정을 변경하면 하단의 최종 메시지가 <strong>즉시 수정</strong>됩니다.</p>
                             <div class="tone-container">
-
                                 <div class="tone-group">
-                                    <div class="tone-label">화법</div>
-                                    <div class="tone-options" style="display:flex;gap:6px;">
-                                        <div class="tone-option selected" onclick="setTone('directness','direct',this)"
-                                             style="flex:1;text-align:center;padding:8px;cursor:pointer;border-radius:6px;">직설적</div>
-                                        <div class="tone-option" onclick="setTone('directness','indirect',this)"
-                                             style="flex:1;text-align:center;padding:8px;cursor:pointer;border-radius:6px;">완곡함</div>
+                                    <span class="tone-label">화법</span>
+                                    <div class="tone-options">
+                                        <div class="tone-option selected" onclick="setTone('directness', 'direct', this)">직설적</div>
+                                        <div class="tone-option" onclick="setTone('directness', 'indirect', this)">완곡함</div>
                                     </div>
                                 </div>
-
                                 <div class="tone-group">
-                                    <div class="tone-label">관점</div>
-                                    <div class="tone-options" style="display:flex;gap:6px;">
-                                        <div class="tone-option selected" onclick="setTone('focus','task',this)"
-                                             style="flex:1;text-align:center;padding:8px;">과업 중심</div>
-                                        <div class="tone-option" onclick="setTone('focus','relationship',this)"
-                                             style="flex:1;text-align:center;padding:8px;">관계 중심</div>
+                                    <span class="tone-label">관점</span>
+                                    <div class="tone-options">
+                                        <div class="tone-option selected" onclick="setTone('focus', 'task', this)">과업 중심</div>
+                                        <div class="tone-option" onclick="setTone('focus', 'relationship', this)">관계 중심</div>
                                     </div>
                                 </div>
-
                                 <div class="tone-group">
-                                    <div class="tone-label">어조</div>
-                                    <div class="tone-options" style="display:flex;gap:6px;">
-                                        <div class="tone-option selected" onclick="setTone('style','logical',this)"
-                                             style="flex:1;text-align:center;padding:8px;">논리적</div>
-                                        <div class="tone-option" onclick="setTone('style','soft',this)"
-                                             style="flex:1;text-align:center;padding:8px;">부드러움</div>
+                                    <span class="tone-label">어조</span>
+                                    <div class="tone-options">
+                                        <div class="tone-option selected" onclick="setTone('style', 'logical', this)">논리적</div>
+                                        <div class="tone-option" onclick="setTone('style', 'soft', this)">부드러움</div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
 
-                        <!-- Step 4 Final Preview -->
+                        <!-- D. 최종 프리뷰 -->
                         <div id="section-final" class="fb-section disabled-area">
-                            <div class="fb-label">4. 최종 메시지</div>
-
-                            <div class="final-box" style="background:#fff;border:1px solid var(--color-purple);
-                                border-radius:12px;padding:20px;min-height:180px;">
-                                <textarea id="final-feedback-text" class="final-text"
-                                    style="width:100%;height:150px;border:none;outline:none;font-size:14px;line-height:1.7;">
-                                </textarea>
+                            <span class="fb-label">4. 최종 피드백 미리보기</span>
+                            <div class="final-box">
+                                <textarea id="final-feedback-text" class="final-text" placeholder="AI 근거 선택 및 톤 설정을 완료하면 최종 메시지가 여기에 생성됩니다."></textarea>
+                                <div class="action-row">
+                                    <button class="btn-primary" style="background:var(--color-teal);" onclick="alert('피드백이 성공적으로 전송되었습니다!')">
+                                        <span>📩 피드백 전송</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                    </div><!-- TAB 3 END -->
+                    </div>
 
-                </div><!-- tab-content-area END -->
-            </div><!-- main-content END -->
-
-        </div><!-- content-wrapper END -->
-    </div
-<script>
-/* ==========================================
-   TEAM DB
-========================================== */
-const teamDB = {
-    "박태희": {
-        job: "Data Scientist",
-        avatar: "👩🏻‍💻",
-        years: "5년 3개월",
-        joinDate: "2019.01.05",
-        eval: "S",
-        keywords: ["#데이터분석", "#통계", "#논리적"],
-        skills: [
-            { name: "Python Analysis", per: 85, color: "var(--color-purple)" },
-            { name: "Machine Learning", per: 70, color: "var(--color-magenta)" }
-        ],
-        strengths: ["문제 핵심 파악", "빠른 툴 학습"],
-        weaknesses: ["대면 발표 스킬", "동시다발 업무 스트레스"],
-        growthPath: "M10 90 Q 80 85, 120 50 T 190 10",
-        growthPoints: [{x:10,y:90},{x:120,y:50},{x:190,y:10}],
-        growthDesc: "최근 6개월간 분석 역량이 급성장했습니다.",
-        history: [
-            { date:"2023.01", title:"DX 추진팀 이동", desc:"전사 AI 모델링 리드" },
-            { date:"2019.01", title:"신입 입사", desc:"생산기술팀" }
-        ],
-        kpiTotal: 92,
-        kpiDesc:"데이터 파이프라인 구축 및 정확도 목표 초과",
-        coreValues:[
-            {name:"Customer Focus",score:95},
-            {name:"Sustainability",score:85},
-            {name:"Agility",score:90},
-            {name:"Passion",score:92},
-            {name:"Collaboration",score:80}
-        ],
-        currRole:"Data Scientist",
-        goalRole:"Data Tech Lead",
-        compGoals:["MLOps 구축", "AWS 자격 취득"],
-        bizGoals:["생성형 챗봇", "공정 모니터링"],
-        projectLog:{
-            success:{name:"전사 데이터 파이프라인 구축",result:"200% 속도 향상",method:"병렬 처리 아키텍처 적용"},
-            improve:{name:"파일럿 테스트",issue:"요구사항 조율 부족",missing:"현업과 초기 스펙 조율"}
-        }
-    },
-
-    /* ---- 나머지 멤버 동일 (생략 없이 그대로 유지) ---- */
-    /* ⚠️ 너가 올린 원본 멤버 데이터는 글자 수 제한 때문에 여기서 생략함.
-       → 네가 쓰던 그대로 PART4의 teamDB 안에 복붙해 넣으면 돼.
-       → 모든 기능은 그 구조 그대로 작동함. */
-};
-
-
-/* ==========================================
-   GLOBALS
-========================================== */
-const members = Object.keys(teamDB);
-let currentMemberKey = null;
-
-let toneProfile = { directness: "direct", focus: "task", style: "logical" };
-let selectedEvidence = { str:"", imp:"", gro:"" };
-
-
-/* ==========================================
-   ONLOAD
-========================================== */
-window.onload = () => {
-    renderSidebar();
-    setupSearch();
-};
-
-
-/* ==========================================
-   SIDEBAR RENDER + SEARCH
-========================================== */
-function setupSearch() {
-    const input = document.getElementById("member-search");
-    input.addEventListener("keypress", e => {
-        if (e.key === "Enter") {
-            const val = input.value.trim();
-            const found = members.find(m => m.includes(val));
-            if (found) selectMember(found);
-            else alert("팀원을 찾을 수 없습니다.");
-        }
-    });
-}
-
-/* [추가] 팀원 수 표시 */
-function renderSidebar() {
-    const list = document.getElementById("member-list");
-    list.innerHTML = "";
-
-    members.forEach(name => {
-        const d = teamDB[name];
-        const div = document.createElement("div");
-        div.className = "member-item";
-        div.id = `mem-${name}`;
-        div.onclick = () => selectMember(name);
-        div.innerHTML = `
-            <div class="m-avatar">${d.avatar}</div>
-            <div class="m-info">
-                <div class="m-name">${name}</div>
-                <div class="m-job">${d.job}</div>
+                </div>
             </div>
-        `;
-        list.appendChild(div);
-    });
+        </div>
+    </div>
 
-    document.getElementById("team-count").innerText = members.length;
-}
+    <script>
+        // [데이터] 
+        const teamDB = {
+            '박태희': {
+                job: 'Data Scientist', avatar: '👩🏻‍💻', years: '5년 3개월', joinDate: '2019.01.05', eval: 'S',
+                keywords: ['#데이터분석', '#통계', '#논리적'],
+                skills: [ { name: 'Python Analysis', per: 85, color: 'var(--color-purple)' }, { name: 'Machine Learning', per: 70, color: 'var(--color-magenta)' } ],
+                strengths: ['문제 핵심 파악', '빠른 툴 학습'], weaknesses: ['대면 발표 스킬', '동시다발 업무 스트레스'],
+                growthPath: "M10 90 Q 80 85, 120 50 T 190 10", growthPoints: [{x:10,y:90}, {x:120,y:50}, {x:190,y:10}], growthDesc: "최근 6개월간 분석 역량이 급격히 성장하였습니다.",
+                history: [ { date: '2023.01', title: 'DX 추진팀 이동', desc: '전사 AI 모델링 리드' }, { date: '2019.01', title: '신입 입사', desc: '석유화학본부 생산기술팀' } ],
+                kpiTotal: 92, kpiDesc: '전사 데이터 파이프라인 구축 및 모델 정확도 목표 초과 달성',
+                coreValues: [ { name: 'Customer Focus', score: 95 }, { name: 'Sustainability', score: 85 }, { name: 'Agility', score: 90 }, { name: 'Passion', score: 92 }, { name: 'Collaboration', score: 80 } ],
+                currRole: 'Data Scientist', goalRole: 'Data Tech Lead', compGoals: ['MLOps 구축 경험', 'AWS 자격 취득'], bizGoals: ['생성형 AI 챗봇', '공정 이상 탐지'],
+                
+                // [NEW] 구체적인 프로젝트 로그 (근거용)
+                projectLog: {
+                    success: { name: "전사 데이터 파이프라인 구축", result: "데이터 처리 속도를 200% 향상시키는", method: "병렬 처리 아키텍처를 선제적으로 도입한" },
+                    improve: { name: "현장 적용 파일럿 테스트", issue: "일정 지연이 발생했는데", missing: "현업 부서와의 초기 요구사항 조율" }
+                }
+            },
+            '박재현': {
+                job: 'AI Researcher', avatar: '👨🏻‍🔬', years: '8년 1개월', joinDate: '2016.03.02', eval: 'A',
+                keywords: ['#AI', '#딥러닝', '#혁신'],
+                skills: [ { name: 'Deep Learning', per: 95, color: 'var(--color-purple)' }, { name: 'Computer Vision', per: 80, color: 'var(--color-magenta)' } ],
+                strengths: ['연구 역량', '최적화'], weaknesses: ['비즈니스 관점', '문서화'],
+                growthPath: "M10 70 Q 100 50, 190 20", growthPoints: [{x:10,y:70}, {x:100,y:50}, {x:190,y:20}], growthDesc: "입사 이래 꾸준히 높은 연구 성과를 유지하고 있습니다.",
+                history: [ { date: '2022.01', title: 'AI 선행연구팀', desc: '비전 검사 알고리즘 고도화' } ],
+                kpiTotal: 88, kpiDesc: '신규 알고리즘 특허 2건 출원 및 학회 발표',
+                coreValues: [ { name: 'Customer Focus', score: 80 }, { name: 'Sustainability', score: 75 }, { name: 'Agility', score: 95 }, { name: 'Passion', score: 90 }, { name: 'Collaboration', score: 70 } ],
+                currRole: 'AI Researcher', goalRole: 'Principal Researcher', compGoals: ['논문 구현', '학회 네트워킹'], bizGoals: ['비전 검사기 상용화', '불량률 감소'],
+                
+                projectLog: {
+                    success: { name: "비전 검사 알고리즘 고도화", result: "검출 정확도 99.5%를 달성하는", method: "최신 논문의 Transformer 모델을 빠르게 적용해본" },
+                    improve: { name: "현장 상용화 프로젝트", issue: "현장 엔지니어의 피드백 반영이 늦어졌는데", missing: "사용자 관점에서의 UI/UX 고려" }
+                }
+            },
+            '박정호': {
+                job: 'Project Manager', avatar: '👨🏻‍💼', years: '12년', joinDate: '2012.01.10', eval: 'A+',
+                keywords: ['#PM', '#리더십'],
+                skills: [ { name: 'Project Mgmt', per: 92, color: 'var(--color-purple)' }, { name: 'Communication', per: 88, color: 'var(--color-teal)' } ],
+                strengths: ['추진력', '조율'], weaknesses: ['기술 이해도'],
+                growthPath: "M10 30 Q 100 20, 190 20", growthPoints: [{x:10,y:30}, {x:100,y:20}, {x:190,y:20}], growthDesc: "PM으로서의 역량이 성숙 단계에 접어들어 안정적입니다.",
+                history: [ { date: '2020.01', title: 'DX PM', desc: '스마트팩토리 구축' } ],
+                kpiTotal: 95, kpiDesc: '대형 프로젝트 납기 100% 준수 및 예산 절감',
+                coreValues: [ { name: 'Customer Focus', score: 90 }, { name: 'Sustainability', score: 85 }, { name: 'Agility', score: 88 }, { name: 'Passion', score: 92 }, { name: 'Collaboration', score: 98 } ],
+                currRole: 'Project Manager', goalRole: 'Center Leader', compGoals: ['PMP 갱신', '애자일 코칭'], bizGoals: ['DX 성공적 런칭'],
+                
+                projectLog: {
+                    success: { name: "스마트팩토리 구축", result: "납기를 100% 준수하고 예산을 15% 절감하는", method: "애자일 기반의 스프린트 운영 방식을 도입한" },
+                    improve: { name: "레거시 시스템 마이그레이션", issue: "기술적 이슈로 인한 지연이 있었는데", missing: "초기 기술 검토 단계에서의 전문가 리뷰" }
+                }
+            },
+            '박재원': {
+                job: 'Software Eng.', avatar: '👨🏻‍💻', years: '3년', joinDate: '2021.02', eval: 'A',
+                keywords: ['#개발', '#클라우드'],
+                skills: [ { name: 'React', per: 75, color: 'var(--color-purple)' }, { name: 'AWS', per: 60, color: 'var(--color-lightblue)' } ],
+                strengths: ['성실함', '프로토타이핑'], weaknesses: ['아키텍처', '코드리뷰'],
+                growthPath: "M10 90 L 80 80 L 190 40", growthPoints: [{x:10,y:90}, {x:80,y:80}, {x:190,y:40}], growthDesc: "초기 적응을 마치고 개발 생산성이 향상되고 있습니다.",
+                history: [ { date: '2021.02', title: '신입 입사', desc: '플랫폼 개발' } ],
+                kpiTotal: 85, kpiDesc: '레거시 코드 리팩토링 및 신규 기능 개발 완료',
+                coreValues: [ { name: 'Customer Focus', score: 85 }, { name: 'Sustainability', score: 80 }, { name: 'Agility', score: 85 }, { name: 'Passion', score: 90 }, { name: 'Collaboration', score: 88 } ],
+                currRole: 'Software Eng.', goalRole: 'Architect', compGoals: ['Kubernetes', 'MSA'], bizGoals: ['안정성 99.9%'],
+                
+                projectLog: {
+                    success: { name: "신규 기능 개발", result: "사용자 요청 기능을 2주 만에 배포하는", method: "빠른 프로토타이핑과 사용자 테스트" },
+                    improve: { name: "레거시 코드 리팩토링", issue: "사이드 이펙트가 발생했는데", missing: "테스트 코드(TDD) 작성 및 커버리지 확보" }
+                }
+            },
+            '하유림': {
+                job: 'UX Designer', avatar: '👩🏻‍🎨', years: '4년', joinDate: '2019.11', eval: 'A',
+                keywords: ['#UX', '#디자인'],
+                skills: [ { name: 'UI Design', per: 88, color: 'var(--color-magenta)' } ],
+                strengths: ['창의성', '인사이트'], weaknesses: ['데이터 분석'],
+                growthPath: "M10 90 C 60 90, 90 40, 190 30", growthPoints: [{x:10,y:90}, {x:190,y:30}], growthDesc: "디자인 시스템 구축을 통해 전문성이 크게 확대되었습니다.",
+                history: [ { date: '2019.11', title: '입사', desc: '디자인센터' } ],
+                kpiTotal: 90, kpiDesc: '디자인 시스템 구축 및 사용자 만족도 상승',
+                coreValues: [ { name: 'Customer Focus', score: 98 }, { name: 'Sustainability', score: 80 }, { name: 'Agility', score: 85 }, { name: 'Passion', score: 90 }, { name: 'Collaboration', score: 92 } ],
+                currRole: 'UX Designer', goalRole: 'Product Designer', compGoals: ['Figma 심화'], bizGoals: ['이탈률 감소'],
+                
+                projectLog: {
+                    success: { name: "디자인 시스템 구축", result: "개발-디자인 협업 효율을 30% 개선하는", method: "공통 컴포넌트 표준화 및 가이드라인 배포" },
+                    improve: { name: "신규 서비스 UX 기획", issue: "데이터 기반의 근거가 부족했는데", missing: "사용자 행동 데이터(Log) 분석" }
+                }
+            }
+        };
+        
+        const members = Object.keys(teamDB);
+        let currentMemberKey = null;
+        let toneProfile = { directness: 'direct', focus: 'task', style: 'logical' };
+        let selectedEvidence = { str: '', imp: '', gro: '' };
 
-function resetView() {
-    document.getElementById("empty-state").style.display = "flex";
-    document.getElementById("main-content").classList.remove("active");
-    document.querySelectorAll(".member-item").forEach(el => el.classList.remove("active"));
-    currentMemberKey = null;
-}
+        window.onload = () => { renderSidebar(); setupSearch(); };
 
-
-/* ==========================================
-   MEMBER SELECTION → TAB 1 / TAB 2 데이터 렌더링
-========================================== */
-function selectMember(name) {
-
-    currentMemberKey = name;
-
-    /* 화면 전환 */
-    document.getElementById("empty-state").style.display = "none";
-    document.getElementById("main-content").classList.add("active");
-
-    document.querySelectorAll(".member-item").forEach(el => el.classList.remove("active"));
-    document.getElementById(`mem-${name}`).classList.add("active");
-
-    const d = teamDB[name];
-
-    /* TAB 1 */
-    document.getElementById("p-avatar").innerText = d.avatar;
-    document.getElementById("p-name").innerText = name;
-    document.getElementById("p-job").innerText = d.job;
-
-    document.getElementById("p-keywords").innerHTML =
-        d.keywords.map(k => `<span class="keyword">${k}</span>`).join("");
-
-    document.getElementById("p-info-list").innerHTML = `
-        <div class="info-item"><span>경력</span><span>${d.years}</span></div>
-        <div class="info-item"><span>입사일</span><span>${d.joinDate}</span></div>
-        <div class="info-item"><span>전년평가</span><span>${d.eval}</span></div>
-    `;
-
-    document.getElementById("p-skills").innerHTML =
-        d.skills.map(s => `
-            <div class="skill-row">
-                <div class="skill-meta"><span>${s.name}</span><span>${s.per}%</span></div>
-                <div class="progress-track"><div class="progress-fill" style="width:${s.per}%;background:${s.color};"></div></div>
-            </div>
-        `).join("");
-
-    /* SWOT */
-    document.getElementById("p-strengths").innerHTML =
-        d.strengths.map(s => `<div class="swot-item">${s}</div>`).join("");
-    document.getElementById("p-weaknesses").innerHTML =
-        d.weaknesses.map(s => `<div class="swot-item">${s}</div>`).join("");
-
-    /* 성장 그래프 */
-    document.getElementById("growth-path").setAttribute("d", d.growthPath);
-    const gPoints = document.getElementById("growth-points"); gPoints.innerHTML = "";
-    d.growthPoints.forEach(pt => {
-        const c = document.createElementNS("http://www.w3.org/2000/svg","circle");
-        c.setAttribute("cx", pt.x); c.setAttribute("cy", pt.y);
-        c.setAttribute("r", "4"); c.setAttribute("fill", "white");
-        c.setAttribute("stroke", "var(--color-purple)");
-        gPoints.appendChild(c);
-    });
-    document.getElementById("growth-desc").innerText = d.growthDesc;
-
-    /* Career History */
-    document.getElementById("p-history").innerHTML =
-        d.history.map(h => `
-            <div class="timeline-item">
-                <div class="timeline-dot"></div>
-                <div class="timeline-date">${h.date}</div>
-                <div class="timeline-content">${h.title}</div>
-                <div class="timeline-sub">${h.desc}</div>
-            </div>
-        `).join("");
-
-    /* TAB 2 — 성과 */
-    let cvSum = 0; let cvHtml = "";
-    d.coreValues.forEach(c => {
-        cvSum += c.score;
-        cvHtml += `
-            <div class="cv-item">
-                <div class="cv-header"><span>${c.name}</span><span>${c.score}</span></div>
-                <div class="cv-bar-bg"><div class="cv-bar-fill" style="width:${c.score}%;"></div></div>
-            </div>
-        `;
-    });
-
-    const cvAvg = Math.round(cvSum / d.coreValues.length);
-    document.getElementById("cv-list").innerHTML = cvHtml;
-    document.getElementById("cv-total-score").innerText = cvAvg;
-
-    /* KPI donut animation */
-    const donut = document.getElementById("kpi-donut");
-    donut.style.transition = "none";
-    donut.style.strokeDashoffset = 377;
-    setTimeout(()=> {
-        donut.style.transition = "stroke-dashoffset 1s ease-out";
-        donut.style.strokeDashoffset = 377 - (377 * d.kpiTotal / 100);
-    }, 50);
-
-    document.getElementById("kpi-total").innerText = d.kpiTotal + "%";
-    document.getElementById("kpi-desc-text").innerText = d.kpiDesc;
-
-    /* FINAL GRADE */
-    const finalScore = d.kpiTotal * 0.8 + cvAvg * 0.2;
-    document.getElementById("sum-kpi").innerText = d.kpiTotal;
-    document.getElementById("calc-kpi").innerText = `(x0.8=${(d.kpiTotal*0.8).toFixed(1)})`;
-    document.getElementById("sum-cv").innerText = cvAvg;
-    document.getElementById("calc-cv").innerText = `(x0.2=${(cvAvg*0.2).toFixed(1)})`;
-    document.getElementById("final-grade").innerText = calculateGrade(finalScore);
-
-    /* Career Path */
-    document.getElementById("dev-current").innerText = d.currRole;
-    document.getElementById("dev-goal").innerText = d.goalRole;
-
-    document.getElementById("dev-comp-goals").innerHTML =
-        d.compGoals.map(g => `<li>${g}</li>`).join("");
-
-    document.getElementById("dev-biz-goals").innerHTML =
-        d.bizGoals.map(g => `<li>${g}</li>`).join("");
-
-    /* 탭 초기화 */
-    document.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
-    document.getElementById("tab-item-basic").classList.add("active");
-    document.getElementById("tab-basic").classList.add("active");
-
-    resetFeedbackTab();
-}
-
-/* ==========================================
-   GRADE LOGIC
-========================================== */
-function calculateGrade(score) {
-    if(score>=95) return "S";
-    if(score>=90) return "A+";
-    if(score>=85) return "A";
-    if(score>=80) return "B+";
-    if(score>=70) return "B";
-    return "C";
-}
-
-
-/* ==========================================
-   FEEDBACK TAB LOGIC
-========================================== */
-
-function resetFeedbackTab() {
-    document.getElementById("input-str").value = "";
-    document.getElementById("input-imp").value = "";
-    document.getElementById("input-gro").value = "";
-
-    document.getElementById("section-evidence").style.display = "none";
-    document.getElementById("section-tone").classList.add("disabled-area");
-    document.getElementById("section-final").classList.add("disabled-area");
-
-    selectedEvidence = { str:"", imp:"", gro:"" };
-    document.getElementById("final-feedback-text").value = "";
-}
-
-/* 키워드 사전 */
-const feedbackDictionary = {
-    "Analytic":{
-        keywords:["분석","논리","데이터","객관","근거","냉철","수치"],
-        str:["데이터 기반으로 상황을 냉철하게 판단합니다.","문제를 논리적으로 분해해 해결책을 제시합니다."],
-        imp:["논리적 설명만으로는 전달이 한계가 있을 수 있습니다.","정성적 영향도 함께 고려할 필요가 있습니다."],
-        gro:["데이터를 전략으로 연결하는 능력을 더 키워보면 좋습니다."]
-    },
-    "Communication":{
-        keywords:["소통","협업","경청","피드백","대화","관계"],
-        str:["타 부서와의 협업을 원활하게 이끌었습니다.","동료와의 신뢰 형성에 강점이 있습니다."],
-        imp:["의견을 좀 더 명확히 전달할 필요가 있습니다.","선제적 정보 공유가 부족한 부분이 있었습니다."],
-        gro:["전사 커뮤니케이션을 주도하는 역할로 성장할 수 있습니다."]
-    }
-};
-
-/* BEST CATEGORY 선택 */
-function findBestCategory(text) {
-    let best = null, score = 0;
-    for(const cat in feedbackDictionary){
-        const matchCount = feedbackDictionary[cat].keywords
-            .reduce((acc,k)=> acc+(text.includes(k)?1:0), 0);
-        if(matchCount > score){
-            best = cat; score = matchCount;
+        function setupSearch() {
+            const input = document.getElementById('member-search');
+            input.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') {
+                    const val = this.value.trim();
+                    const found = members.find(m => m.includes(val));
+                    if (found) { selectMember(found); this.value = ''; } 
+                    else { alert('팀원을 찾을 수 없습니다.'); }
+                }
+            });
         }
-    }
-    return best;
-}
 
-/* 근거 생성 */
-function getContextEvidence(inputText, type) {
-    const d = teamDB[currentMemberKey];
-
-    const cat = findBestCategory(inputText);
-    if(cat) {
-        const pool = feedbackDictionary[cat][type];
-        return pool[Math.floor(Math.random()*pool.length)];
-    }
-
-    if(d.projectLog){
-        const s = d.projectLog.success;
-        const i = d.projectLog.improve;
-
-        if(type==="str"){
-            return `연초 '${s.name}' 과제를 통해 ${s.result} 성과를 냈습니다. 특히 '${s.method}' 시도가 큰 도움이 됐습니다.`;
+        function resetView() {
+            document.getElementById('empty-state').style.display = 'flex';
+            document.getElementById('main-content').classList.remove('active');
+            document.querySelectorAll('.member-item').forEach(el => el.classList.remove('active'));
+            currentMemberKey = null;
         }
-        if(type==="imp"){
-            return `'${i.name}'에서는 '${i.missing}' 부분이 보완되면 더 좋은 결과를 만들 수 있습니다.`;
+
+        function renderSidebar() {
+            const list = document.getElementById('member-list');
+            members.forEach(name => {
+                const d = teamDB[name];
+                const full = name + (name.includes('책임')?'':' 선임');
+                const div = document.createElement('div');
+                div.className = 'member-item';
+                div.id = `mem-${name}`;
+                div.onclick = () => selectMember(name);
+                div.innerHTML = `<div class="m-avatar">${d.avatar}</div><div class="m-info"><div class="m-name">${full}</div><div class="m-job">${d.job}</div></div>`;
+                list.appendChild(div);
+            });
         }
-        if(type==="gro"){
-            return `앞으로 '${i.missing}'을 보완하면 ${d.goalRole}로 성장하는 데 큰 기반이 될 것입니다.`;
+
+        function calculateGrade(score) {
+            if (score >= 95) return 'S'; if (score >= 90) return 'A+';
+            if (score >= 85) return 'A'; if (score >= 80) return 'B+';
+            if (score >= 70) return 'B'; return 'C';
         }
-    }
 
-    return "";
-}
+        function selectMember(name) {
+            currentMemberKey = name;
+            document.getElementById('empty-state').style.display = 'none';
+            document.getElementById('main-content').classList.add('active');
+            
+            document.querySelectorAll('.member-item').forEach(el => el.classList.remove('active'));
+            const activeItem = document.getElementById(`mem-${name}`);
+            if(activeItem) activeItem.classList.add('active');
 
-/* AI 근거 초기화 */
-function initAiEvidenceSection() {
-    const s = document.getElementById("input-str").value.trim();
-    const i = document.getElementById("input-imp").value.trim();
-    const g = document.getElementById("input-gro").value.trim();
+            const d = teamDB[name];
+            const full = name + (name.includes('책임')?'':' 선임');
 
-    if(!s || !i || !g) return alert("모든 항목을 입력해야 합니다.");
+            // TAB 1
+            document.getElementById('p-avatar').innerText = d.avatar;
+            document.getElementById('p-name').innerText = full;
+            document.getElementById('p-job').innerText = d.job;
+            document.getElementById('p-keywords').innerHTML = d.keywords.map(k => `<span class="keyword">${k}</span>`).join('');
+            document.getElementById('p-info-list').innerHTML = `<div class="info-item"><span class="info-label">경력</span><span class="info-value">${d.years}</span></div><div class="info-item"><span class="info-label">입사</span><span class="info-value">${d.joinDate}</span></div><div class="info-item"><span class="info-label">전년평가</span><span class="info-value">${d.eval}</span></div>`;
+            document.getElementById('p-skills').innerHTML = d.skills.map(s => `<div class="skill-row"><div class="skill-meta"><span>${s.name}</span><span>${s.per}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${s.per}%; background:${s.color}"></div></div></div>`).join('');
+            document.getElementById('p-strengths').innerHTML = d.strengths.map(s => `<div class="swot-item">${s}</div>`).join('');
+            document.getElementById('p-weaknesses').innerHTML = d.weaknesses.map(s => `<div class="swot-item">${s}</div>`).join('');
+            document.getElementById('growth-path').setAttribute('d', d.growthPath);
+            document.getElementById('growth-desc').innerText = d.growthDesc;
+            
+            const pointsGroup = document.getElementById('growth-points');
+            pointsGroup.innerHTML = '';
+            d.growthPoints.forEach(pt => {
+                const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                circle.setAttribute("cx", pt.x); circle.setAttribute("cy", pt.y); circle.setAttribute("r", "4"); circle.setAttribute("fill", "#fff"); circle.setAttribute("stroke", "var(--color-purple)"); circle.setAttribute("stroke-width", "2");
+                pointsGroup.appendChild(circle);
+            });
+            document.getElementById('p-history').innerHTML = d.history.map(h => `<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-date">${h.date}</div><div class="timeline-content">${h.title}</div><div class="timeline-sub">${h.desc}</div></div>`).join('');
 
-    regenerateEvidence("str");
-    regenerateEvidence("imp");
-    regenerateEvidence("gro");
+            // TAB 2
+            let cvSum = 0; let cvHtml = '';
+            d.coreValues.forEach(c => {
+                cvSum += c.score;
+                cvHtml += `<div class="cv-item"><div class="cv-header"><span class="cv-name">${c.name}</span><span class="cv-val">${c.score}</span></div><div class="cv-bar-bg"><div class="cv-bar-fill" style="width:${c.score}%;"></div></div></div>`;
+            });
+            const cvAvg = Math.round(cvSum / 5);
+            document.getElementById('cv-list').innerHTML = cvHtml;
+            document.getElementById('cv-total-score').innerText = cvAvg;
 
-    document.getElementById("section-evidence").style.display = "block";
-    document.getElementById("section-tone").classList.remove("disabled-area");
-    document.getElementById("section-final").classList.remove("disabled-area");
-}
+            const donutFg = document.getElementById('kpi-donut');
+            const offset = 377 - (377 * d.kpiTotal / 100);
+            donutFg.style.transition = 'none'; donutFg.style.strokeDashoffset = 377;
+            setTimeout(() => { donutFg.style.transition = 'stroke-dashoffset 1s ease-out'; donutFg.style.strokeDashoffset = offset; }, 50);
+            document.getElementById('kpi-total').innerText = d.kpiTotal + '%';
+            document.getElementById('kpi-desc-text').innerText = d.kpiDesc;
 
-function regenerateEvidence(type) {
-    const input = document.getElementById(`input-${type}`).value.trim();
-    const text = getContextEvidence(input,type);
-    document.getElementById(`evidence-${type}-text`).innerText = text;
+            const finalScore = (d.kpiTotal * 0.8) + (cvAvg * 0.2);
+            document.getElementById('sum-kpi').innerText = d.kpiTotal;
+            document.getElementById('calc-kpi').innerText = `(x 0.8 = ${(d.kpiTotal * 0.8).toFixed(1)})`;
+            document.getElementById('sum-cv').innerText = cvAvg;
+            document.getElementById('calc-cv').innerText = `(x 0.2 = ${(cvAvg * 0.2).toFixed(1)})`;
+            document.getElementById('final-grade').innerText = calculateGrade(finalScore);
 
-    selectedEvidence[type] = "";
-    generateFinalFeedback();
-}
+            document.getElementById('dev-current').innerText = d.currRole;
+            document.getElementById('dev-goal').innerText = d.goalRole;
+            const goalList = arr => `<ul style="list-style:none; padding:0;">${arr.map(g => `<li class="goal-li">${g}</li>`).join('')}</ul>`;
+            document.getElementById('dev-comp-goals').innerHTML = goalList(d.compGoals);
+            document.getElementById('dev-biz-goals').innerHTML = goalList(d.bizGoals);
 
-function toggleSelectEvidence(type){
-    const text = document.getElementById(`evidence-${type}-text`).innerText;
-    if(selectedEvidence[type]) selectedEvidence[type] = "";
-    else selectedEvidence[type] = text;
+            // [수정] 탭 초기화 (무조건 기본정보 탭으로)
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            document.getElementById('tab-item-basic').classList.add('active');
+            document.getElementById('tab-basic').classList.add('active');
 
-    generateFinalFeedback();
-}
+            resetFeedbackTab();
+        }
 
-/* 톤 설정 */
-function setTone(type,val, el){
-    toneProfile[type] = val;
+        function switchTab(id, el) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+        }
 
-    const parent = el.parentElement;
-    [...parent.children].forEach(c=>c.classList.remove("selected"));
-    el.classList.add("selected");
+        /* ================= FEEDBACK LOGIC ================= */
+        
+        function resetFeedbackTab() {
+            document.getElementById('input-str').value = '';
+            document.getElementById('input-imp').value = '';
+            document.getElementById('input-gro').value = '';
+            document.getElementById('section-evidence').style.display = 'none';
+            // Disabled Class Add
+            document.getElementById('section-tone').classList.add('disabled-area');
+            document.getElementById('section-final').classList.add('disabled-area');
+            
+            document.getElementById('final-feedback-text').value = '';
+            
+            selectedEvidence = { str: '', imp: '', gro: '' };
+            ['str', 'imp', 'gro'].forEach(key => {
+                document.getElementById('evidence-' + key + '-text').innerText = '';
+                document.getElementById('box-' + key).classList.remove('selected');
+                document.getElementById('btn-sel-' + key).innerText = '선택';
+            });
+        }
 
-    generateFinalFeedback();
-}
+        // 1. 유효성 검사
+        function validateInputs() {
+            const s = document.getElementById('input-str').value.trim();
+            const i = document.getElementById('input-imp').value.trim();
+            const g = document.getElementById('input-gro').value.trim();
+            return s && i && g;
+        }
 
-/* 종결어 변환 — [개선] g 플래그 적용 */
-function modifyEnding(text, soft) {
-    if(!soft) return text;
+        // 2. 키워드 기반 근거 생성 (12개 카테고리)
+        const feedbackDictionary = {
+            'Analytic': {
+                keywords: ['분석', '논리', '데이터', '객관', '근거', '냉철', '수치', '사실', '정확'],
+                str: [ "데이터에 기반하여 상황을 냉철하게 판단하는 점이 돋보입니다.", "복잡한 문제를 논리적으로 분해하여 해결책을 제시했습니다." ],
+                imp: [ "지나치게 논리적인 접근보다는 유연한 소통도 필요합니다.", "분석 결과가 비즈니스에 미치는 정성적 영향도 고려해야 합니다." ],
+                gro: [ "데이터로 비즈니스 전략을 제안하는 전략가로 성장하길 기대합니다." ]
+            },
+            'Communication': {
+                keywords: ['소통', '경청', '설득', '협업', '공유', '피드백', '대화', '관계'],
+                str: [ "타 부서와의 갈등 상황을 유연하게 조율했습니다.", "동료의 의견을 경청하는 태도로 신뢰를 형성했습니다." ],
+                imp: [ "본인의 의견을 조금 더 명확하게 개진할 필요가 있습니다.", "유관부서에 대한 선제적인 정보 공유가 아쉽습니다." ],
+                gro: [ "전사 차원의 프로젝트를 조율하는 커뮤니케이터로 성장하길 바랍니다." ]
+            }
+            // ... 추가 카테고리 ...
+        };
 
-    return text
-        .replace(/합니다/g,"해요")
-        .replace(/했습니다/g,"했어요")
-        .replace(/입니다/g,"이에요")
-        .replace(/생각합니다/g,"생각해요")
-        .replace(/아쉽습니다/g,"조금 아쉬웠어요");
-}
+        function getContextEvidence(inputText, type) {
+            const member = teamDB[currentMemberKey];
+            if (!member) return "";
 
-/* 최종 피드백 생성 */
-function generateFinalFeedback() {
+            // 1) 키워드 매칭 우선
+            let matchedCategory = null;
+            for (const cat in feedbackDictionary) {
+                if (feedbackDictionary[cat].keywords.some(k => inputText.includes(k))) {
+                    matchedCategory = cat;
+                    break;
+                }
+            }
 
-    const s = document.getElementById("input-str").value.trim();
-    const i = document.getElementById("input-imp").value.trim();
-    const g = document.getElementById("input-gro").value.trim();
+            if (matchedCategory) {
+                const pool = feedbackDictionary[matchedCategory][type];
+                if (pool && pool.length > 0) {
+                    // 랜덤 선택
+                    const randomIndex = Math.floor(Math.random() * pool.length);
+                    return pool[randomIndex];
+                }
+            }
+            
+            // 2) 프로젝트 로그 기반 (Fallback)
+            if (member.projectLog) {
+                const succ = member.projectLog.success;
+                const imp = member.projectLog.improve;
+                
+                if (type === 'str') {
+                    return `예를 들어 연초에 '${succ.name}' 과제를 목표로 하였는데, 목표대로 완성되어 ${succ.result} 성과를 냈습니다. 특히 업무 방식에 있어 '${succ.method}' 점을 시도해 본 것이 매우 의미 있었다고 생각합니다.`;
+                } else if (type === 'imp') {
+                    return `다만 '${imp.name}' 과제는 계획했던 만큼 달성되지 못했는데, 진행하는 과정에서 '${imp.missing}' 점을 시도해보지 않은 점은 아쉽습니다.`;
+                } else { // gro
+                    return `앞으로는 이러한 개선점('${imp.missing}')을 보완한다면, 향후 '${member.goalRole}'로서 더 큰 성과를 낼 수 있을 것이라 생각합니다.`;
+                }
+            }
 
-    if(!s && !i && !g){
-        document.getElementById("final-feedback-text").value="";
-        return;
-    }
+            // 3) 최후 Fallback
+            if (type === 'str') return `상위 5%에 해당하는 '${member.coreValues[0].name}' 점수(${member.coreValues[0].score}점)가 이를 뒷받침합니다.`;
+            return `핵심가치 중 '${member.coreValues[4].name}' 점수가 다소 낮아 보완이 필요해 보입니다.`;
+        }
 
-    const soft = toneProfile.style === "soft";
-    const logical = !soft;
+        function initAiEvidenceSection() {
+            if (!validateInputs()) {
+                alert("강점, 보완점, 성장/방향을 모두 입력해야\nAI 근거를 생성할 수 있습니다.");
+                return;
+            }
 
-    const out = [];
+            if(!currentMemberKey) return;
+            regenerateEvidence('str');
+            regenerateEvidence('imp');
+            regenerateEvidence('gro');
+            
+            document.getElementById('section-evidence').style.display = 'block';
+            
+            document.getElementById('section-tone').classList.remove('disabled-area');
+            document.getElementById('section-final').classList.remove('disabled-area');
 
-    /* 오프닝 */
-    out.push(logical ?
-        "금년도 성과에 대한 종합 피드백입니다." :
-        "올 한 해 동안 정말 수고 많았어요.");
+            document.getElementById('section-evidence').scrollIntoView({ behavior: 'smooth' });
+        }
 
-    /* 강점 */
-    if(s){
-        let msg = logical ?
-            `우선, ${s} 점은 긍정적으로 평가됩니다.` :
-            `먼저 ${s} 부분이 정말 좋았어요.`;
-        if(selectedEvidence.str) msg += " " + modifyEnding(selectedEvidence.str, soft);
-        out.push(msg);
-    }
+        function regenerateEvidence(type) {
+            const inputId = 'input-' + type;
+            const inputText = document.getElementById(inputId).value;
+            const text = getContextEvidence(inputText, type);
+            
+            document.getElementById('evidence-' + type + '-text').innerText = text;
+            
+            selectedEvidence[type] = '';
+            document.getElementById('box-' + type).classList.remove('selected');
+            document.getElementById('btn-sel-' + type).innerText = '선택';
+            generateFinalFeedback(); 
+        }
 
-    /* 보완 */
-    if(i){
-        let msg = logical ?
-            `다만, ${i} 부분은 개선이 필요합니다.` :
-            `한편, ${i} 부분은 조금만 더 보완되면 좋아요.`;
-        if(selectedEvidence.imp) msg += " " + modifyEnding(selectedEvidence.imp, soft);
-        out.push(msg);
-    }
+        function toggleSelectEvidence(type) {
+            const box = document.getElementById('box-' + type);
+            const btn = document.getElementById('btn-sel-' + type);
+            const text = document.getElementById('evidence-' + type + '-text').innerText;
 
-    /* 성장 */
-    if(g){
-        let msg = logical ?
-            `향후에는 ${g} 방향으로 역량을 집중하기 바랍니다.` :
-            `앞으로는 ${g} 방향으로 함께 성장해봐요.`;
-        if(selectedEvidence.gro) msg += " " + modifyEnding(selectedEvidence.gro, soft);
-        out.push(msg);
-    }
+            if (selectedEvidence[type]) {
+                selectedEvidence[type] = '';
+                box.classList.remove('selected');
+                btn.innerText = '선택';
+            } else {
+                selectedEvidence[type] = text;
+                box.classList.add('selected');
+                btn.innerText = '선택 취소';
+            }
+            generateFinalFeedback();
+        }
 
-    /* 마무리 */
-    if(toneProfile.focus==="task"){
-        out.push(logical ?
-            "다음 미팅에서 실행 계획을 구체화해봅시다." :
-            "목표 달성을 위해 함께 방법을 찾아봐요.");
-    } else {
-        out.push(logical ?
-            "지속적인 성장을 지원하겠습니다." :
-            "궁금한 점이나 어려움이 있으면 언제든 편하게 이야기해요.");
-    }
+        function setTone(type, value, element) {
+            toneProfile[type] = value;
+            const parent = element.parentElement;
+            Array.from(parent.children).forEach(child => child.classList.remove('selected'));
+            element.classList.add('selected');
+            generateFinalFeedback();
+        }
 
-    document.getElementById("final-feedback-text").value = out.join("\n\n");
-}
+        function generateFinalFeedback() {
+            const strInput = document.getElementById('input-str').value.trim();
+            const impInput = document.getElementById('input-imp').value.trim();
+            const groInput = document.getElementById('input-gro').value.trim();
 
-</script>
+            if(!strInput && !impInput && !groInput) {
+                document.getElementById('final-feedback-text').value = '';
+                return;
+            }
 
+            let sentences = [];
+            const isLogical = toneProfile.style === 'logical';
+            
+            // [어조 변환 함수]
+            const modifyEnding = (text, mode) => {
+                if(!text) return "";
+                if(mode === 'soft') {
+                    return text.replace(/합니다/g, '해요').replace(/했습니다/g, '했어요').replace(/입니다/g, '이에요').replace(/생각합니다/g, '생각해요').replace(/아쉽습니다/g, '조금 아쉬웠어요');
+                }
+                return text; // Logical은 그대로 (합니다체)
+            };
+
+            // 1. 오프닝
+            if (isLogical) sentences.push(`금년도 성과에 대한 종합 피드백을 전달합니다.`);
+            else sentences.push(`올 한 해 동안 팀을 위해 정말 많이 애써주셔서 고마워요.`);
+
+            // 2. 강점 파트
+            if (strInput) {
+                let s = "";
+                if (isLogical) s = `우선, ${strInput} 점은 매우 긍정적으로 평가됩니다.`;
+                else s = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
+                
+                if (selectedEvidence.str) s += ` ${modifyEnding(selectedEvidence.str, isLogical?'logical':'soft')}`;
+                sentences.push(s);
+            }
+
+            // 3. 보완 파트
+            if (impInput) {
+                let i = "";
+                if (isLogical) i = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
+                else i = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
+                
+                if (selectedEvidence.imp) i += ` ${modifyEnding(selectedEvidence.imp, isLogical?'logical':'soft')}`;
+                sentences.push(i);
+            }
+
+            // 4. 성장 파트
+            if (groInput) {
+                let g = "";
+                if (isLogical) g = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
+                else g = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
+                
+                if (selectedEvidence.gro) g += ` ${modifyEnding(selectedEvidence.gro, isLogical?'logical':'soft')}`;
+                sentences.push(g);
+            }
+
+            // 5. 클로징
+            if (toneProfile.focus === 'task') {
+                if(isLogical) sentences.push(`위 내용에 대한 구체적인 실행 계획(Action Plan)을 수립하여 차주 미팅 시 논의합시다.`);
+                else sentences.push(`어떻게 하면 목표를 더 잘 달성할 수 있을지, 구체적인 방법을 같이 고민해봐요.`);
+            } else {
+                if(isLogical) sentences.push(`지속적인 성장을 지원하겠습니다.`);
+                else sentences.push(`언제든 도움이 필요하거나 힘든 점이 있다면 편하게 이야기해주세요. 항상 응원합니다.`);
+            }
+
+            document.getElementById('final-feedback-text').value = sentences.join("\n\n");
+        }
+
+    </script>
 </body>
 </html>
-
-
