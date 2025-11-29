@@ -44,7 +44,10 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .logo-area { text-decoration: none; color: #fff; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; cursor: pointer; }
+        .logo-area { 
+            text-decoration: none; color: #fff; font-size: 22px; font-weight: 700; 
+            letter-spacing: -0.5px; cursor: pointer; 
+        }
         
         .search-box {
             background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4);
@@ -61,7 +64,7 @@
         /* 3. 사이드바 */
         .sidebar {
             width: var(--sidebar-width); background: #fff; border-right: 1px solid #e0e0e0;
-            display: flex; flex-direction: column; overflow-y: auto;
+            display: flex; flex-direction: column; overflow-y: auto; flex-shrink: 0;
         }
         .sidebar-header { padding: 24px 20px 10px; font-size: 14px; font-weight: 700; color: #888; text-transform: uppercase; }
         .member-item {
@@ -86,7 +89,7 @@
             overflow: hidden; display: flex; flex-direction: column;
         }
 
-        /* 초기화면 (Empty State) */
+        /* 초기화면 */
         .empty-state {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -206,7 +209,7 @@
         .goal-li { position: relative; padding-left: 14px; font-size: 13px; color: #555; margin-bottom: 6px; }
         .goal-li::before { content: '•'; position: absolute; left: 0; color: #ccc; }
 
-        /* [TAB 3] 전달 (NEW CSS) */
+        /* [TAB 3] 전달 (Feedback) */
         .fb-section { margin-bottom: 32px; animation: fadeIn 0.3s; }
         .fb-label { display: block; font-size: 14px; font-weight: 700; color: #444; margin-bottom: 8px; }
         .fb-desc { font-size: 12px; color: #888; margin-bottom: 12px; }
@@ -229,10 +232,8 @@
         }
         .btn-secondary:hover { background: #f5f5f5; }
 
-        /* 비활성화 상태 스타일 */
         .disabled-area { opacity: 0.5; pointer-events: none; filter: grayscale(100%); transition: all 0.3s; }
 
-        /* Evidence Section */
         .evidence-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
         .evidence-box { 
             background: #fbfbfb; border: 1px solid #eee; border-radius: 12px; padding: 16px; 
@@ -268,7 +269,6 @@
         }
         .tone-option.selected { background: #fff; color: var(--color-purple); box-shadow: 0 2px 4px rgba(0,0,0,0.05); font-weight: 700; }
 
-        /* Final Preview */
         .final-box { background: #fff; border: 1px solid var(--color-purple); border-radius: 12px; padding: 24px; min-height: 150px; }
         .final-text { width: 100%; border: none; outline: none; font-size: 15px; line-height: 1.8; color: #333; resize: none; height: 200px; font-family: 'Noto Sans KR', sans-serif; }
         .action-row { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
@@ -328,7 +328,7 @@
                 <!-- 탭 네비게이션 -->
                 <nav class="nav-tabs-container">
                     <ul class="nav-tabs">
-                        <!-- [수정] ID 부여: tab-item-basic -->
+                        <!-- [중요] 탭 ID 부여 -->
                         <li class="tab-item active" id="tab-item-basic" onclick="switchTab('basic', this)"><a class="tab-link">기본정보</a></li>
                         <li class="tab-item" id="tab-item-perf" onclick="switchTab('perf', this)"><a class="tab-link">성과 & 육성</a></li>
                         <li class="tab-item" id="tab-item-feedback" onclick="switchTab('feedback', this)"><a class="tab-link">전달</a></li>
@@ -671,6 +671,7 @@
         let toneProfile = { directness: 'direct', focus: 'task', style: 'logical' };
         let selectedEvidence = { str: '', imp: '', gro: '' };
 
+        /* ================= ONLOAD ================= */
         window.onload = () => { renderSidebar(); setupSearch(); };
 
         function setupSearch() {
@@ -775,13 +776,14 @@
             document.getElementById('dev-comp-goals').innerHTML = goalList(d.compGoals);
             document.getElementById('dev-biz-goals').innerHTML = goalList(d.bizGoals);
 
-            // [수정] 탭 초기화 (무조건 기본정보 탭으로)
+            // [중요] 탭 강제 초기화 (기본정보로 이동)
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             
             document.getElementById('tab-item-basic').classList.add('active');
             document.getElementById('tab-basic').classList.add('active');
 
+            // TAB 3 초기화
             resetFeedbackTab();
         }
 
@@ -834,8 +836,19 @@
                 str: [ "타 부서와의 갈등 상황을 유연하게 조율했습니다.", "동료의 의견을 경청하는 태도로 신뢰를 형성했습니다." ],
                 imp: [ "본인의 의견을 조금 더 명확하게 개진할 필요가 있습니다.", "유관부서에 대한 선제적인 정보 공유가 아쉽습니다." ],
                 gro: [ "전사 차원의 프로젝트를 조율하는 커뮤니케이터로 성장하길 바랍니다." ]
+            },
+            'Detail': {
+                keywords: ['꼼꼼', '섬세', '디테일', '완벽', '치밀', '실수', '검토'],
+                str: [ "작은 오류도 놓치지 않는 꼼꼼함으로 업무의 완성도를 높였습니다.", "디테일한 부분까지 챙기는 치밀함이 프로젝트의 품질을 높였습니다." ],
+                imp: [ "때로는 세부적인 디테일에 몰두하느라 큰 그림을 놓치는 경우가 있습니다.", "완벽주의 성향으로 인해 업무 속도가 늦어질 수 있어 완급 조절이 필요합니다." ],
+                gro: [ "디테일 관리 능력을 바탕으로 품질을 관리하는 QA 리더로 성장할 수 있습니다." ]
+            },
+            'Passion': {
+                keywords: ['열정', '적극', '긍정', '도전', '끈기', '에너지', '몰입'],
+                str: [ "어려운 과제에도 굴하지 않고 끈기 있게 도전하는 모습이 타의 모범이 됩니다.", "긍정적인 마인드로 변화를 수용하고 주도적으로 업무를 수행합니다." ],
+                imp: [ "의욕이 앞서 역량을 초과하는 업무를 무리하게 맡지 않도록 조절이 필요합니다.", "열정적인 것은 좋으나, 때로는 차분하게 상황을 돌아보는 여유가 필요합니다." ],
+                gro: [ "이러한 열정을 바탕으로, 팀의 핵심 인재를 넘어 조직 문화를 선도하길 바랍니다." ]
             }
-            // ... 추가 카테고리 ...
         };
 
         function getContextEvidence(inputText, type) {
@@ -854,7 +867,6 @@
             if (matchedCategory) {
                 const pool = feedbackDictionary[matchedCategory][type];
                 if (pool && pool.length > 0) {
-                    // 랜덤 선택
                     const randomIndex = Math.floor(Math.random() * pool.length);
                     return pool[randomIndex];
                 }
@@ -948,49 +960,44 @@
 
             let sentences = [];
             const isLogical = toneProfile.style === 'logical';
-            
-            // [어조 변환 함수]
-            const modifyEnding = (text, mode) => {
-                if(!text) return "";
-                if(mode === 'soft') {
-                    return text.replace(/합니다/g, '해요').replace(/했습니다/g, '했어요').replace(/입니다/g, '이에요').replace(/생각합니다/g, '생각해요').replace(/아쉽습니다/g, '조금 아쉬웠어요');
-                }
-                return text; // Logical은 그대로 (합니다체)
-            };
+            const isSoft = toneProfile.style === 'soft';
+
+            // [Helper] 어조 변환기
+            const toSoft = (text) => text.replace(/합니다/g, '해요').replace(/했습니다/g, '했어요').replace(/입니다/g, '이에요').replace(/생각합니다/g, '생각해요').replace(/아쉽습니다/g, '조금 아쉬웠어요').replace(/판단됩니다/g, '생각됩니다');
 
             // 1. 오프닝
-            if (isLogical) sentences.push(`금년도 성과에 대한 종합 피드백을 전달합니다.`);
+            if (isLogical) sentences.push(`금년도 성과 평가 결과를 바탕으로 종합 피드백을 전달합니다.`);
             else sentences.push(`올 한 해 동안 팀을 위해 정말 많이 애써주셔서 고마워요.`);
 
-            // 2. 강점 파트
-            if (strInput) {
-                let s = "";
-                if (isLogical) s = `우선, ${strInput} 점은 매우 긍정적으로 평가됩니다.`;
-                else s = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
-                
-                if (selectedEvidence.str) s += ` ${modifyEnding(selectedEvidence.str, isLogical?'logical':'soft')}`;
-                sentences.push(s);
+            // 2. 강점 파트 (입력 + 근거)
+            let strBlock = "";
+            if (isLogical) strBlock = `우선, ${strInput} 점은 매우 긍정적으로 평가됩니다.`;
+            else strBlock = `먼저 칭찬하고 싶은 점은, ${strInput} 부분이 정말 탁월했다는 점이에요.`;
+            
+            if (selectedEvidence.str) {
+                strBlock += isSoft ? ` ${toSoft(selectedEvidence.str)}` : ` ${selectedEvidence.str}`;
             }
+            sentences.push(strBlock);
 
             // 3. 보완 파트
-            if (impInput) {
-                let i = "";
-                if (isLogical) i = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
-                else i = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
-                
-                if (selectedEvidence.imp) i += ` ${modifyEnding(selectedEvidence.imp, isLogical?'logical':'soft')}`;
-                sentences.push(i);
+            let impBlock = "";
+            if (isLogical) impBlock = `다만, ${impInput} 부분은 개선이 필요하다고 판단됩니다.`;
+            else impBlock = `하지만 조금 더 욕심을 내보자면, ${impInput} 부분은 보완이 되면 좋겠어요.`;
+            
+            if (selectedEvidence.imp) {
+                impBlock += isSoft ? ` ${toSoft(selectedEvidence.imp)}` : ` ${selectedEvidence.imp}`;
             }
+            sentences.push(impBlock);
 
             // 4. 성장 파트
-            if (groInput) {
-                let g = "";
-                if (isLogical) g = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
-                else g = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
-                
-                if (selectedEvidence.gro) g += ` ${modifyEnding(selectedEvidence.gro, isLogical?'logical':'soft')}`;
-                sentences.push(g);
+            let groBlock = "";
+            if (isLogical) groBlock = `향후에는 ${groInput} 방향으로 역량을 집중하기 바랍니다.`;
+            else groBlock = `앞으로는 ${groInput} 방향으로 우리 함께 성장해 나갑시다.`;
+            
+            if (selectedEvidence.gro) {
+                groBlock += isSoft ? ` ${toSoft(selectedEvidence.gro)}` : ` ${selectedEvidence.gro}`;
             }
+            sentences.push(groBlock);
 
             // 5. 클로징
             if (toneProfile.focus === 'task') {
@@ -1003,9 +1010,6 @@
 
             document.getElementById('final-feedback-text').value = sentences.join("\n\n");
         }
-
     </script>
 </body>
 </html>
-
-혹시 더 수정하거나 개선해야할 점 있을까?
